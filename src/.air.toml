@@ -1,0 +1,12 @@
+root = "."  # Thư mục gốc của dự án
+tmp_dir = "tmp"  # Thư mục tạm thời
+
+[build]
+  bin = "tmp/server.exe"  # File biên dịch đầu ra
+  cmd = "go build -o tmp/server.exe ./server"  # Biên dịch thư mục server
+  include_ext = ["go", "yml"]  # Theo dõi file .go và .yml
+  exclude_dir = ["tmp"]  # Bỏ qua thư mục tmp
+  watch_dir = ["server", "graph"]  # Chỉ theo dõi thư mục server và graph
+
+[log]
+  level = "debug"  # Debug để dễ theo dõi lỗi

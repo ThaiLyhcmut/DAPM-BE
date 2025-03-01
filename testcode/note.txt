@@ -1,0 +1,7 @@
+1️⃣ *.pb.go (Protocol Buffer - Protobuf file)
+👉 Chứa các structs (messages) và các hàm hỗ trợ encode/decode dữ liệu.
+👉 Được dùng để định nghĩa dữ liệu truyền tải giữa client và server.
+
+2️⃣ *.grpc.go (gRPC service file)
+👉 Chứa interface của service đã định nghĩa trong .proto.
+👉 Được dùng để triển khai server-side handler và gọi RPC từ client.

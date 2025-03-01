@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package calculator;
+
+option go_package = "github.com/thaily/projectname/calculatorpb";
+
+message SumRequest {
+  int32 num1 = 1; // sysntax data = số thứ tự 
+  int32 num2 = 2; 
+}
+
+message SumResponse {
+  int32 result = 1;
+}
+
+message PNDRequest {
+  int32 number = 1;
+}
+
+message PNDResponse {
+  int32 result = 1;
+}
+
+message AVARequest {
+  float num = 1;
+}
+
+message AVAResponse {
+  float result = 1;
+}
+
+message MRequest {
+  int32 num = 1;
+}
+
+message MResponse {
+  int32 max = 1;
+}
+
+message SQRequest {
+  int32 num = 1;
+}
+// ví dụ thêm repeated phía trước là trả về 1 mảng
+message SQResponse {
+  double SQRoot = 1;
+}
+
+service CalculatorService {
+  rpc Sum(SumRequest) returns (SumResponse) {} // Unary API 
+  rpc PrimeNumberDecompostion(PNDRequest) returns (stream PNDResponse) {} // Server Streaming
+  rpc Average(stream AVARequest) returns (stream AVAResponse) {} // Client Streaming
+  rpc Max(stream MRequest) returns (stream MResponse) {} // Bi-Directional Streaming
+  rpc Squere(SQRequest) returns (SQResponse) {}
+  rpc SumWithDeadline(SumRequest) returns (SumResponse) {} 
+}

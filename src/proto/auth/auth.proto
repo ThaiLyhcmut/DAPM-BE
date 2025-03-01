@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "github.com/serviceAuth";
+
+
+message TokenRQ {
+  string token = 1;
+}
+
+message RegisterRQ {
+  string email = 1;
+  string password = 2;
+  string phone = 3;
+  string otp = 4;
+}
+
+message LoginRQ {
+  string email = 1;
+  string password = 2;
+}
+
+message AccountRP {
+  int32 id = 1;
+  string email = 2;
+  string password = 3;
+  string phone = 4;
+}
+
+service AuthService {
+  rpc Register(RegisterRQ) returns (AccountRP) {}
+  rpc Login(LoginRQ) returns (AccountRP) {}
+  rpc Infor(TokenRQ) returns (AccountRP) {}
+}
