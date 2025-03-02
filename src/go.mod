@@ -1,4 +1,4 @@
-module github.com/ThaiLyhcmut
+module ThaiLy
 
 go 1.24.0
 

@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/ThaiLyhcmut/service/auth/model"
+	"ThaiLy/service/auth/model"
 )
 
 func (D *Database) CreateAccount(FullName, Email, Password, Phone string) (*model.Account, error) {

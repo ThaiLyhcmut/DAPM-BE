@@ -1,8 +1,10 @@
 package controller
 
 import (
-	protoAuth "github.com/ThaiLyhcmut/proto/auth"
-	"github.com/ThaiLyhcmut/service/auth/database"
+	protoAuth "ThaiLy/proto/auth"
+
+	"ThaiLy/service/auth/database"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

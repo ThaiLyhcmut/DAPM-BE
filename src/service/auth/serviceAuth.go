@@ -6,9 +6,10 @@ import (
 	"log"
 	"net"
 
-	protoAuth "github.com/ThaiLyhcmut/proto/auth"
-	"github.com/ThaiLyhcmut/service/auth/controller"
-	"github.com/ThaiLyhcmut/service/auth/database"
+	protoAuth "ThaiLy/proto/auth"
+	"ThaiLy/service/auth/controller"
+	"ThaiLy/service/auth/database"
+
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

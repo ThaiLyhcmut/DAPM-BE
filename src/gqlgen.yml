@@ -5,7 +5,7 @@ schema:
 
 # Where should the generated server code go?
 exec:
-  package: graph
+  package: generated
   layout: follow-schema # Only other option is "follow-schema," ie multi-file.
 
   dir: graph/generated

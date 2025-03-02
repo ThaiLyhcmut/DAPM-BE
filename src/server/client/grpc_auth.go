@@ -3,7 +3,8 @@ package client
 import (
 	"context"
 
-	protoAuth "github.com/ThaiLyhcmut/proto/auth"
+	protoAuth "ThaiLy/proto/auth"
+
 	"google.golang.org/grpc"
 )
 
