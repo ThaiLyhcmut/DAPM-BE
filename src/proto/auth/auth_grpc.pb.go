@@ -30,7 +30,7 @@ const (
 type AuthServiceClient interface {
 	Register(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[RegisterRQ, AccountRP], error)
 	Login(ctx context.Context, in *LoginRQ, opts ...grpc.CallOption) (*AccountRP, error)
-	Infor(ctx context.Context, in *TokenRQ, opts ...grpc.CallOption) (*AccountRP, error)
+	Infor(ctx context.Context, in *IdA, opts ...grpc.CallOption) (*AccountRP, error)
 }
 
 type authServiceClient struct {
@@ -64,7 +64,7 @@ func (c *authServiceClient) Login(ctx context.Context, in *LoginRQ, opts ...grpc
 	return out, nil
 }
 
-func (c *authServiceClient) Infor(ctx context.Context, in *TokenRQ, opts ...grpc.CallOption) (*AccountRP, error) {
+func (c *authServiceClient) Infor(ctx context.Context, in *IdA, opts ...grpc.CallOption) (*AccountRP, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AccountRP)
 	err := c.cc.Invoke(ctx, AuthService_Infor_FullMethodName, in, out, cOpts...)
@@ -80,7 +80,7 @@ func (c *authServiceClient) Infor(ctx context.Context, in *TokenRQ, opts ...grpc
 type AuthServiceServer interface {
 	Register(grpc.ClientStreamingServer[RegisterRQ, AccountRP]) error
 	Login(context.Context, *LoginRQ) (*AccountRP, error)
-	Infor(context.Context, *TokenRQ) (*AccountRP, error)
+	Infor(context.Context, *IdA) (*AccountRP, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -97,7 +97,7 @@ func (UnimplementedAuthServiceServer) Register(grpc.ClientStreamingServer[Regist
 func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRQ) (*AccountRP, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedAuthServiceServer) Infor(context.Context, *TokenRQ) (*AccountRP, error) {
+func (UnimplementedAuthServiceServer) Infor(context.Context, *IdA) (*AccountRP, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Infor not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
@@ -147,7 +147,7 @@ func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _AuthService_Infor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TokenRQ)
+	in := new(IdA)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -159,7 +159,7 @@ func _AuthService_Infor_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: AuthService_Infor_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Infor(ctx, req.(*TokenRQ))
+		return srv.(AuthServiceServer).Infor(ctx, req.(*IdA))
 	}
 	return interceptor(ctx, in, info, handler)
 }

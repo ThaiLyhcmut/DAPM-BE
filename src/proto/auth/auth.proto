@@ -5,8 +5,8 @@ package auth;
 option go_package = "github.com/protoAuth";
 
 
-message TokenRQ {
-  string token = 1;
+message IdA {
+  int32 id = 1;
 }
 
 message RegisterRQ {
@@ -32,5 +32,5 @@ message AccountRP {
 service AuthService {
   rpc Register(stream RegisterRQ) returns (AccountRP) {}
   rpc Login(LoginRQ) returns (AccountRP) {}
-  rpc Infor(TokenRQ) returns (AccountRP) {}
+  rpc Infor(IdA) returns (AccountRP) {}
 }

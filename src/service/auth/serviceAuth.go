@@ -22,8 +22,8 @@ type service struct {
 }
 
 func (S *service) Register(stream protoAuth.AuthService_RegisterServer) error {
+	//
 	var lastRequest *protoAuth.RegisterRQ
-
 	for {
 		in, err := stream.Recv()
 		// đống stream
@@ -50,12 +50,12 @@ func (S *service) Register(stream protoAuth.AuthService_RegisterServer) error {
 
 }
 
-func (*service) Login(ctx context.Context, in *protoAuth.LoginRQ) (*protoAuth.AccountRP, error) {
-	return nil, nil
+func (S *service) Login(ctx context.Context, in *protoAuth.LoginRQ) (*protoAuth.AccountRP, error) {
+	return S.c.ControllerLogin(in)
 }
 
-func (*service) Infor(context.Context, *protoAuth.TokenRQ) (*protoAuth.AccountRP, error) {
-	return nil, nil
+func (S *service) Infor(ctx context.Context, in *protoAuth.IdA) (*protoAuth.AccountRP, error) {
+	return S.c.ControllerInfor(in)
 }
 
 func main() {
@@ -68,16 +68,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
 	}
-
-	// certFile := "ssl/server.crt"
-	// keyFile := "ssl/server.pem"
-	// //ssl for server
-	// creds, sslErr := credentials.NewServerTLSFromFile(certFile, keyFile)
-	// if sslErr != nil {
-	// 	log.Fatal("create creds ssl err %v\n", sslErr)
-	// }
-
-	// opts := grpc.Creds(creds)
 
 	s := grpc.NewServer() // tao server
 
