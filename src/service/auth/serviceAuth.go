@@ -21,25 +21,33 @@ type service struct {
 	c *controller.Controller
 }
 
-func (S *service) Register(stream grpc.ClientStreamingServer[protoAuth.RegisterRQ, protoAuth.AccountRP]) error {
+func (S *service) Register(stream protoAuth.AuthService_RegisterServer) error {
+	var lastRequest *protoAuth.RegisterRQ
+
 	for {
 		in, err := stream.Recv()
+		// đống stream
 		if err == io.EOF {
 			log.Println("EOF...")
-			return nil
-		}
-		if err != nil {
-			return status.Error(codes.InvalidArgument, "input invalid")
-		}
-		if in.GetOtp() != "" {
-			resp, err := S.c.ControllerRegister(in)
+			// 🔥 Nếu không có request nào gửi đến, trả lỗi
+			if lastRequest == nil {
+				return status.Error(codes.InvalidArgument, "No data received")
+			}
+			// 🔥 Gọi Controller để xử lý request cuối cùng
+			resp, err := S.c.ControllerRegister(lastRequest)
 			if err != nil {
 				return err
 			}
+			// 🔥 Gửi phản hồi và đóng stream
 			return stream.SendAndClose(resp)
 		}
-
+		if err != nil {
+			return status.Error(codes.Internal, "Failed to receive data")
+		}
+		// 🔥 Cập nhật request cuối cùng nhận được
+		lastRequest = in
 	}
+
 }
 
 func (*service) Login(ctx context.Context, in *protoAuth.LoginRQ) (*protoAuth.AccountRP, error) {
