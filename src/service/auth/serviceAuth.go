@@ -2,21 +2,43 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"net"
 
 	protoAuth "github.com/ThaiLyhcmut/proto/auth"
+	"github.com/ThaiLyhcmut/service/auth/controller"
 	"github.com/ThaiLyhcmut/service/auth/database"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type service struct {
 	protoAuth.UnimplementedAuthServiceServer
+	c *controller.Controller
 }
 
-func (*service) Register(ctx context.Context, in *protoAuth.RegisterRQ) (*protoAuth.AccountRP, error) {
-	return nil, nil
+func (S *service) Register(stream grpc.ClientStreamingServer[protoAuth.RegisterRQ, protoAuth.AccountRP]) error {
+	for {
+		in, err := stream.Recv()
+		if err == io.EOF {
+			log.Println("EOF...")
+			return nil
+		}
+		if err != nil {
+			return status.Error(codes.InvalidArgument, "input invalid")
+		}
+		if in.GetOtp() != "" {
+			resp, err := S.c.ControllerRegister(in)
+			if err != nil {
+				return err
+			}
+			return stream.SendAndClose(resp)
+		}
+
+	}
 }
 
 func (*service) Login(ctx context.Context, in *protoAuth.LoginRQ) (*protoAuth.AccountRP, error) {
@@ -29,8 +51,10 @@ func (*service) Infor(context.Context, *protoAuth.TokenRQ) (*protoAuth.AccountRP
 
 func main() {
 	godotenv.Load()
-	database.InitDB()
+	db := database.InitDB()
 	// Ensure proper cleanup
+	ctrl := controller.NewController(db)
+
 	lis, err := net.Listen("tcp", "localhost:55555") // tao port
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
@@ -48,7 +72,7 @@ func main() {
 
 	s := grpc.NewServer() // tao server
 
-	protoAuth.RegisterAuthServiceServer(s, &service{}) // dang ky server
+	protoAuth.RegisterAuthServiceServer(s, &service{c: ctrl}) // dang ky server
 
 	err = s.Serve(lis) // run server                                     // run server
 	if err != nil {

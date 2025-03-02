@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/codegen/testserver/nullabledirectives/generated"
-	resolver "github.com/99designs/gqlgen/codegen/testserver/nullabledirectives/generated/resolvers"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	resolver "github.com/ThaiLyhcmut/graph/resolver"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -44,7 +44,10 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-
+	// auth, err := client.NewGRPCClient("localhost:55555")
+	// if err != nil {
+	// 	log.Fatal("client auth error %v", err)
+	// }
 	// Create GraphQL handler
 	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{}}))
 

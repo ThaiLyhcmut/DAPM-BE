@@ -1,0 +1,23 @@
+type Account {
+  id: Int
+  fullName: String
+  email: String
+  phone: String
+  token: String
+}
+
+input RegisterAccount {
+  fullName: String!
+  email: String!
+  password: String!
+  phone: String!
+  otp: String
+}
+
+type Mutation {
+  registerAccount(account: RegisterAccount!): Account
+}
+
+type Query {
+  xinchao: Account
+}

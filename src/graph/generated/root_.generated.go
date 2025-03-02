@@ -10,6 +10,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/ThaiLyhcmut/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -32,13 +33,28 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Mutation() MutationResolver
+	Query() QueryResolver
 }
 
 type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Account struct {
+		Email    func(childComplexity int) int
+		FullName func(childComplexity int) int
+		ID       func(childComplexity int) int
+		Phone    func(childComplexity int) int
+		Token    func(childComplexity int) int
+	}
+
+	Mutation struct {
+		RegisterAccount func(childComplexity int, account model.RegisterAccount) int
+	}
+
 	Query struct {
+		Xinchao func(childComplexity int) int
 	}
 }
 
@@ -61,6 +77,60 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Account.email":
+		if e.complexity.Account.Email == nil {
+			break
+		}
+
+		return e.complexity.Account.Email(childComplexity), true
+
+	case "Account.fullName":
+		if e.complexity.Account.FullName == nil {
+			break
+		}
+
+		return e.complexity.Account.FullName(childComplexity), true
+
+	case "Account.id":
+		if e.complexity.Account.ID == nil {
+			break
+		}
+
+		return e.complexity.Account.ID(childComplexity), true
+
+	case "Account.phone":
+		if e.complexity.Account.Phone == nil {
+			break
+		}
+
+		return e.complexity.Account.Phone(childComplexity), true
+
+	case "Account.token":
+		if e.complexity.Account.Token == nil {
+			break
+		}
+
+		return e.complexity.Account.Token(childComplexity), true
+
+	case "Mutation.registerAccount":
+		if e.complexity.Mutation.RegisterAccount == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_registerAccount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RegisterAccount(childComplexity, args["account"].(model.RegisterAccount)), true
+
+	case "Query.xinchao":
+		if e.complexity.Query.Xinchao == nil {
+			break
+		}
+
+		return e.complexity.Query.Xinchao(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -68,7 +138,9 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
-	inputUnmarshalMap := graphql.BuildUnmarshalerMap()
+	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputRegisterAccount,
+	)
 	first := true
 
 	switch opCtx.Operation.Operation {
@@ -101,6 +173,21 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 
 			return &response
+		}
+	case ast.Mutation:
+		return func(ctx context.Context) *graphql.Response {
+			if !first {
+				return nil
+			}
+			first = false
+			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
+			data := ec._Mutation(ctx, opCtx.Operation.SelectionSet)
+			var buf bytes.Buffer
+			data.MarshalGQL(&buf)
+
+			return &graphql.Response{
+				Data: buf.Bytes(),
+			}
 		}
 
 	default:
@@ -150,6 +237,29 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../schema/auth.graphqls", Input: `type Account {
+  id: Int
+  fullName: String
+  email: String
+  phone: String
+  token: String
+}
+
+input RegisterAccount {
+  fullName: String!
+  email: String!
+  password: String!
+  phone: String!
+  otp: String
+}
+
+type Mutation {
+  registerAccount(account: RegisterAccount!): Account
+}
+
+type Query {
+  xinchao: Account
+}`, BuiltIn: false},
 	{Name: "../schema/schema.graphqls", Input: ``, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

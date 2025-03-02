@@ -28,7 +28,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
-	Register(ctx context.Context, in *RegisterRQ, opts ...grpc.CallOption) (*AccountRP, error)
+	Register(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[RegisterRQ, AccountRP], error)
 	Login(ctx context.Context, in *LoginRQ, opts ...grpc.CallOption) (*AccountRP, error)
 	Infor(ctx context.Context, in *TokenRQ, opts ...grpc.CallOption) (*AccountRP, error)
 }
@@ -41,15 +41,18 @@ func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 	return &authServiceClient{cc}
 }
 
-func (c *authServiceClient) Register(ctx context.Context, in *RegisterRQ, opts ...grpc.CallOption) (*AccountRP, error) {
+func (c *authServiceClient) Register(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[RegisterRQ, AccountRP], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AccountRP)
-	err := c.cc.Invoke(ctx, AuthService_Register_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &AuthService_ServiceDesc.Streams[0], AuthService_Register_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &grpc.GenericClientStream[RegisterRQ, AccountRP]{ClientStream: stream}
+	return x, nil
 }
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type AuthService_RegisterClient = grpc.ClientStreamingClient[RegisterRQ, AccountRP]
 
 func (c *authServiceClient) Login(ctx context.Context, in *LoginRQ, opts ...grpc.CallOption) (*AccountRP, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -75,7 +78,7 @@ func (c *authServiceClient) Infor(ctx context.Context, in *TokenRQ, opts ...grpc
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
 type AuthServiceServer interface {
-	Register(context.Context, *RegisterRQ) (*AccountRP, error)
+	Register(grpc.ClientStreamingServer[RegisterRQ, AccountRP]) error
 	Login(context.Context, *LoginRQ) (*AccountRP, error)
 	Infor(context.Context, *TokenRQ) (*AccountRP, error)
 	mustEmbedUnimplementedAuthServiceServer()
@@ -88,8 +91,8 @@ type AuthServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAuthServiceServer struct{}
 
-func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRQ) (*AccountRP, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+func (UnimplementedAuthServiceServer) Register(grpc.ClientStreamingServer[RegisterRQ, AccountRP]) error {
+	return status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRQ) (*AccountRP, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
@@ -118,23 +121,12 @@ func RegisterAuthServiceServer(s grpc.ServiceRegistrar, srv AuthServiceServer) {
 	s.RegisterService(&AuthService_ServiceDesc, srv)
 }
 
-func _AuthService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRQ)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).Register(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AuthService_Register_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Register(ctx, req.(*RegisterRQ))
-	}
-	return interceptor(ctx, in, info, handler)
+func _AuthService_Register_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(AuthServiceServer).Register(&grpc.GenericServerStream[RegisterRQ, AccountRP]{ServerStream: stream})
 }
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type AuthService_RegisterServer = grpc.ClientStreamingServer[RegisterRQ, AccountRP]
 
 func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginRQ)
@@ -180,10 +172,6 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Register",
-			Handler:    _AuthService_Register_Handler,
-		},
-		{
 			MethodName: "Login",
 			Handler:    _AuthService_Login_Handler,
 		},
@@ -192,6 +180,12 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_Infor_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Register",
+			Handler:       _AuthService_Register_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "proto/auth/auth.proto",
 }

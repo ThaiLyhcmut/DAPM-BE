@@ -2,5 +2,24 @@
 
 package model
 
+type Account struct {
+	ID       *int    `json:"id,omitempty"`
+	FullName *string `json:"fullName,omitempty"`
+	Email    *string `json:"email,omitempty"`
+	Phone    *string `json:"phone,omitempty"`
+	Token    *string `json:"token,omitempty"`
+}
+
+type Mutation struct {
+}
+
 type Query struct {
+}
+
+type RegisterAccount struct {
+	FullName string  `json:"fullName"`
+	Email    string  `json:"email"`
+	Password string  `json:"password"`
+	Phone    string  `json:"phone"`
+	Otp      *string `json:"otp,omitempty"`
 }
