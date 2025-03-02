@@ -13,21 +13,12 @@ import (
 
 // RegisterAccount is the resolver for the registerAccount field.
 func (r *mutationResolver) RegisterAccount(ctx context.Context, account model.RegisterAccount) (*model.Account, error) {
-	result, err := r.Auth.Register(account.FullName, account.Email, account.Password, account.Phone, account.Otp)
-	fmt.Println(result, err)
-	if err != nil {
-		return nil, err
-	}
-	id := int(result.Id)
-	token := "hello"
-	resp := &model.Account{
-		ID:       &id,
-		FullName: &result.FullName,
-		Email:    &result.Email,
-		Phone:    &result.Phone,
-		Token:    &token,
-	}
-	return resp, nil
+	return r.Ctrl.ControllerRegister(account)
+}
+
+// LoginAccount is the resolver for the LoginAccount field.
+func (r *mutationResolver) LoginAccount(ctx context.Context, account model.LoginAccount) (*model.Account, error) {
+	return r.Ctrl.ControllerLogin(account)
 }
 
 // Xinchao is the resolver for the xinchao field.

@@ -6,6 +6,11 @@ type Account {
   token: String
 }
 
+input LoginAccount {
+  email: String!
+  password: String!
+}
+
 input RegisterAccount {
   fullName: String!
   email: String!
@@ -16,6 +21,7 @@ input RegisterAccount {
 
 type Mutation {
   registerAccount(account: RegisterAccount!): Account
+  LoginAccount(account: LoginAccount!): Account
 }
 
 type Query {

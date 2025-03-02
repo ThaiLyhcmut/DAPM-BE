@@ -59,3 +59,11 @@ func (c *GRPCClient) Register(fullName string, email string, password string, ph
 
 	return resp, nil
 }
+
+func (c *GRPCClient) Login(email, password string) (*protoAuth.AccountRP, error) {
+	in := &protoAuth.LoginRQ{
+		Email:    email,
+		Password: password,
+	}
+	return c.client.Login(context.Background(), in)
+}

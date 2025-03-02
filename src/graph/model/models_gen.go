@@ -10,6 +10,11 @@ type Account struct {
 	Token    *string `json:"token,omitempty"`
 }
 
+type LoginAccount struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type Mutation struct {
 }
 

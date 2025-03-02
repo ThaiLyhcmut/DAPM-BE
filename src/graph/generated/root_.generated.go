@@ -50,6 +50,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		LoginAccount    func(childComplexity int, account model.LoginAccount) int
 		RegisterAccount func(childComplexity int, account model.RegisterAccount) int
 	}
 
@@ -112,6 +113,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Token(childComplexity), true
 
+	case "Mutation.LoginAccount":
+		if e.complexity.Mutation.LoginAccount == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_LoginAccount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.LoginAccount(childComplexity, args["account"].(model.LoginAccount)), true
+
 	case "Mutation.registerAccount":
 		if e.complexity.Mutation.RegisterAccount == nil {
 			break
@@ -139,6 +152,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputLoginAccount,
 		ec.unmarshalInputRegisterAccount,
 	)
 	first := true
@@ -245,6 +259,11 @@ var sources = []*ast.Source{
   token: String
 }
 
+input LoginAccount {
+  email: String!
+  password: String!
+}
+
 input RegisterAccount {
   fullName: String!
   email: String!
@@ -255,6 +274,7 @@ input RegisterAccount {
 
 type Mutation {
   registerAccount(account: RegisterAccount!): Account
+  LoginAccount(account: LoginAccount!): Account
 }
 
 type Query {

@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"ThaiLy/graph/controller"
 	"ThaiLy/graph/generated"
 	resolver "ThaiLy/graph/resolver"
 	"ThaiLy/server/client"
@@ -50,8 +51,9 @@ func main() {
 	if err != nil {
 		log.Fatal("client auth error %v", err)
 	}
+	ctrl := controller.NewController(auth)
 	// Create GraphQL handler
-	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{Auth: auth}}))
+	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{Ctrl: ctrl}}))
 
 	// Add GraphQL transports (Options, GET, POST)
 	srv.AddTransport(transport.Options{})

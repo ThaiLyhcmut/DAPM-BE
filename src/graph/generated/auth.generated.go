@@ -19,6 +19,7 @@ import (
 
 type MutationResolver interface {
 	RegisterAccount(ctx context.Context, account model.RegisterAccount) (*model.Account, error)
+	LoginAccount(ctx context.Context, account model.LoginAccount) (*model.Account, error)
 }
 type QueryResolver interface {
 	Xinchao(ctx context.Context) (*model.Account, error)
@@ -27,6 +28,34 @@ type QueryResolver interface {
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_LoginAccount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Mutation_LoginAccount_argsAccount(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["account"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_LoginAccount_argsAccount(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (model.LoginAccount, error) {
+	if _, ok := rawArgs["account"]; !ok {
+		var zeroVal model.LoginAccount
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
+	if tmp, ok := rawArgs["account"]; ok {
+		return ec.unmarshalNLoginAccount2ThaiLyᚋgraphᚋmodelᚐLoginAccount(ctx, tmp)
+	}
+
+	var zeroVal model.LoginAccount
+	return zeroVal, nil
+}
 
 func (ec *executionContext) field_Mutation_registerAccount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
@@ -361,6 +390,70 @@ func (ec *executionContext) fieldContext_Mutation_registerAccount(ctx context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_LoginAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_LoginAccount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().LoginAccount(rctx, fc.Args["account"].(model.LoginAccount))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Account)
+	fc.Result = res
+	return ec.marshalOAccount2ᚖThaiLyᚋgraphᚋmodelᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_LoginAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Account_id(ctx, field)
+			case "fullName":
+				return ec.fieldContext_Account_fullName(ctx, field)
+			case "email":
+				return ec.fieldContext_Account_email(ctx, field)
+			case "phone":
+				return ec.fieldContext_Account_phone(ctx, field)
+			case "token":
+				return ec.fieldContext_Account_token(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_LoginAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_xinchao(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_xinchao(ctx, field)
 	if err != nil {
@@ -549,6 +642,40 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputLoginAccount(ctx context.Context, obj any) (model.LoginAccount, error) {
+	var it model.LoginAccount
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"email", "password"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "email":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Email = data
+		case "password":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Password = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputRegisterAccount(ctx context.Context, obj any) (model.RegisterAccount, error) {
 	var it model.RegisterAccount
 	asMap := map[string]any{}
@@ -679,6 +806,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_registerAccount(ctx, field)
 			})
+		case "LoginAccount":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_LoginAccount(ctx, field)
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -774,6 +905,11 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) unmarshalNLoginAccount2ThaiLyᚋgraphᚋmodelᚐLoginAccount(ctx context.Context, v any) (model.LoginAccount, error) {
+	res, err := ec.unmarshalInputLoginAccount(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
 
 func (ec *executionContext) unmarshalNRegisterAccount2ThaiLyᚋgraphᚋmodelᚐRegisterAccount(ctx context.Context, v any) (model.RegisterAccount, error) {
 	res, err := ec.unmarshalInputRegisterAccount(ctx, v)
