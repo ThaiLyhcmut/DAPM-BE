@@ -19,18 +19,41 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	EquipmentService_Home_FullMethodName      = "/equipment.EquipmentService/Home"
-	EquipmentService_Area_FullMethodName      = "/equipment.EquipmentService/Area"
-	EquipmentService_Equipment_FullMethodName = "/equipment.EquipmentService/Equipment"
+	EquipmentService_Home_FullMethodName            = "/equipment.EquipmentService/Home"
+	EquipmentService_CreateHome_FullMethodName      = "/equipment.EquipmentService/CreateHome"
+	EquipmentService_DeleteHome_FullMethodName      = "/equipment.EquipmentService/DeleteHome"
+	EquipmentService_EditHome_FullMethodName        = "/equipment.EquipmentService/EditHome"
+	EquipmentService_Area_FullMethodName            = "/equipment.EquipmentService/Area"
+	EquipmentService_CreateArea_FullMethodName      = "/equipment.EquipmentService/CreateArea"
+	EquipmentService_DeleteArea_FullMethodName      = "/equipment.EquipmentService/DeleteArea"
+	EquipmentService_EditArea_FullMethodName        = "/equipment.EquipmentService/EditArea"
+	EquipmentService_Equipment_FullMethodName       = "/equipment.EquipmentService/Equipment"
+	EquipmentService_CreateEquipment_FullMethodName = "/equipment.EquipmentService/CreateEquipment"
+	EquipmentService_DeleteEquipment_FullMethodName = "/equipment.EquipmentService/DeleteEquipment"
+	EquipmentService_EditEquipment_FullMethodName   = "/equipment.EquipmentService/EditEquipment"
 )
 
 // EquipmentServiceClient is the client API for EquipmentService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EquipmentServiceClient interface {
+	// start home
 	Home(ctx context.Context, in *HomeRQ, opts ...grpc.CallOption) (*ListHomeRP, error)
+	CreateHome(ctx context.Context, in *CreateHomeRQ, opts ...grpc.CallOption) (*HomeRP, error)
+	DeleteHome(ctx context.Context, in *DeleteHomeRQ, opts ...grpc.CallOption) (*SuccessRP, error)
+	EditHome(ctx context.Context, in *EditHomeRQ, opts ...grpc.CallOption) (*HomeRP, error)
+	// end Home
+	// start area
 	Area(ctx context.Context, in *AreaRQ, opts ...grpc.CallOption) (*ListAreaRP, error)
+	CreateArea(ctx context.Context, in *CreateAreaRQ, opts ...grpc.CallOption) (*AreaRP, error)
+	DeleteArea(ctx context.Context, in *DeleteAreaRQ, opts ...grpc.CallOption) (*SuccessRP, error)
+	EditArea(ctx context.Context, in *EditAreaRQ, opts ...grpc.CallOption) (*AreaRP, error)
+	// end area
+	// start equipment
 	Equipment(ctx context.Context, in *EquipmentRQ, opts ...grpc.CallOption) (*ListEquimentRP, error)
+	CreateEquipment(ctx context.Context, in *CreateEquipmentRQ, opts ...grpc.CallOption) (*EquipmentRP, error)
+	DeleteEquipment(ctx context.Context, in *DeleteEquipmentRQ, opts ...grpc.CallOption) (*SuccessRP, error)
+	EditEquipment(ctx context.Context, in *EditEquipmentRQ, opts ...grpc.CallOption) (*EquipmentRP, error)
 }
 
 type equipmentServiceClient struct {
@@ -51,10 +74,70 @@ func (c *equipmentServiceClient) Home(ctx context.Context, in *HomeRQ, opts ...g
 	return out, nil
 }
 
+func (c *equipmentServiceClient) CreateHome(ctx context.Context, in *CreateHomeRQ, opts ...grpc.CallOption) (*HomeRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HomeRP)
+	err := c.cc.Invoke(ctx, EquipmentService_CreateHome_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) DeleteHome(ctx context.Context, in *DeleteHomeRQ, opts ...grpc.CallOption) (*SuccessRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessRP)
+	err := c.cc.Invoke(ctx, EquipmentService_DeleteHome_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) EditHome(ctx context.Context, in *EditHomeRQ, opts ...grpc.CallOption) (*HomeRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HomeRP)
+	err := c.cc.Invoke(ctx, EquipmentService_EditHome_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *equipmentServiceClient) Area(ctx context.Context, in *AreaRQ, opts ...grpc.CallOption) (*ListAreaRP, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListAreaRP)
 	err := c.cc.Invoke(ctx, EquipmentService_Area_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) CreateArea(ctx context.Context, in *CreateAreaRQ, opts ...grpc.CallOption) (*AreaRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AreaRP)
+	err := c.cc.Invoke(ctx, EquipmentService_CreateArea_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) DeleteArea(ctx context.Context, in *DeleteAreaRQ, opts ...grpc.CallOption) (*SuccessRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessRP)
+	err := c.cc.Invoke(ctx, EquipmentService_DeleteArea_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) EditArea(ctx context.Context, in *EditAreaRQ, opts ...grpc.CallOption) (*AreaRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AreaRP)
+	err := c.cc.Invoke(ctx, EquipmentService_EditArea_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -71,13 +154,57 @@ func (c *equipmentServiceClient) Equipment(ctx context.Context, in *EquipmentRQ,
 	return out, nil
 }
 
+func (c *equipmentServiceClient) CreateEquipment(ctx context.Context, in *CreateEquipmentRQ, opts ...grpc.CallOption) (*EquipmentRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EquipmentRP)
+	err := c.cc.Invoke(ctx, EquipmentService_CreateEquipment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) DeleteEquipment(ctx context.Context, in *DeleteEquipmentRQ, opts ...grpc.CallOption) (*SuccessRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessRP)
+	err := c.cc.Invoke(ctx, EquipmentService_DeleteEquipment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) EditEquipment(ctx context.Context, in *EditEquipmentRQ, opts ...grpc.CallOption) (*EquipmentRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EquipmentRP)
+	err := c.cc.Invoke(ctx, EquipmentService_EditEquipment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EquipmentServiceServer is the server API for EquipmentService service.
 // All implementations must embed UnimplementedEquipmentServiceServer
 // for forward compatibility.
 type EquipmentServiceServer interface {
+	// start home
 	Home(context.Context, *HomeRQ) (*ListHomeRP, error)
+	CreateHome(context.Context, *CreateHomeRQ) (*HomeRP, error)
+	DeleteHome(context.Context, *DeleteHomeRQ) (*SuccessRP, error)
+	EditHome(context.Context, *EditHomeRQ) (*HomeRP, error)
+	// end Home
+	// start area
 	Area(context.Context, *AreaRQ) (*ListAreaRP, error)
+	CreateArea(context.Context, *CreateAreaRQ) (*AreaRP, error)
+	DeleteArea(context.Context, *DeleteAreaRQ) (*SuccessRP, error)
+	EditArea(context.Context, *EditAreaRQ) (*AreaRP, error)
+	// end area
+	// start equipment
 	Equipment(context.Context, *EquipmentRQ) (*ListEquimentRP, error)
+	CreateEquipment(context.Context, *CreateEquipmentRQ) (*EquipmentRP, error)
+	DeleteEquipment(context.Context, *DeleteEquipmentRQ) (*SuccessRP, error)
+	EditEquipment(context.Context, *EditEquipmentRQ) (*EquipmentRP, error)
 	mustEmbedUnimplementedEquipmentServiceServer()
 }
 
@@ -91,11 +218,38 @@ type UnimplementedEquipmentServiceServer struct{}
 func (UnimplementedEquipmentServiceServer) Home(context.Context, *HomeRQ) (*ListHomeRP, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Home not implemented")
 }
+func (UnimplementedEquipmentServiceServer) CreateHome(context.Context, *CreateHomeRQ) (*HomeRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateHome not implemented")
+}
+func (UnimplementedEquipmentServiceServer) DeleteHome(context.Context, *DeleteHomeRQ) (*SuccessRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteHome not implemented")
+}
+func (UnimplementedEquipmentServiceServer) EditHome(context.Context, *EditHomeRQ) (*HomeRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditHome not implemented")
+}
 func (UnimplementedEquipmentServiceServer) Area(context.Context, *AreaRQ) (*ListAreaRP, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Area not implemented")
 }
+func (UnimplementedEquipmentServiceServer) CreateArea(context.Context, *CreateAreaRQ) (*AreaRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateArea not implemented")
+}
+func (UnimplementedEquipmentServiceServer) DeleteArea(context.Context, *DeleteAreaRQ) (*SuccessRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteArea not implemented")
+}
+func (UnimplementedEquipmentServiceServer) EditArea(context.Context, *EditAreaRQ) (*AreaRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditArea not implemented")
+}
 func (UnimplementedEquipmentServiceServer) Equipment(context.Context, *EquipmentRQ) (*ListEquimentRP, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Equipment not implemented")
+}
+func (UnimplementedEquipmentServiceServer) CreateEquipment(context.Context, *CreateEquipmentRQ) (*EquipmentRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateEquipment not implemented")
+}
+func (UnimplementedEquipmentServiceServer) DeleteEquipment(context.Context, *DeleteEquipmentRQ) (*SuccessRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteEquipment not implemented")
+}
+func (UnimplementedEquipmentServiceServer) EditEquipment(context.Context, *EditEquipmentRQ) (*EquipmentRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditEquipment not implemented")
 }
 func (UnimplementedEquipmentServiceServer) mustEmbedUnimplementedEquipmentServiceServer() {}
 func (UnimplementedEquipmentServiceServer) testEmbeddedByValue()                          {}
@@ -136,6 +290,60 @@ func _EquipmentService_Home_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EquipmentService_CreateHome_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateHomeRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).CreateHome(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_CreateHome_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).CreateHome(ctx, req.(*CreateHomeRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_DeleteHome_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteHomeRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).DeleteHome(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_DeleteHome_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).DeleteHome(ctx, req.(*DeleteHomeRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_EditHome_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditHomeRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).EditHome(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_EditHome_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).EditHome(ctx, req.(*EditHomeRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _EquipmentService_Area_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AreaRQ)
 	if err := dec(in); err != nil {
@@ -150,6 +358,60 @@ func _EquipmentService_Area_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(EquipmentServiceServer).Area(ctx, req.(*AreaRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_CreateArea_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAreaRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).CreateArea(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_CreateArea_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).CreateArea(ctx, req.(*CreateAreaRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_DeleteArea_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAreaRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).DeleteArea(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_DeleteArea_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).DeleteArea(ctx, req.(*DeleteAreaRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_EditArea_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditAreaRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).EditArea(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_EditArea_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).EditArea(ctx, req.(*EditAreaRQ))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -172,6 +434,60 @@ func _EquipmentService_Equipment_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EquipmentService_CreateEquipment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateEquipmentRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).CreateEquipment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_CreateEquipment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).CreateEquipment(ctx, req.(*CreateEquipmentRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_DeleteEquipment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteEquipmentRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).DeleteEquipment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_DeleteEquipment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).DeleteEquipment(ctx, req.(*DeleteEquipmentRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_EditEquipment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditEquipmentRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).EditEquipment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_EditEquipment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).EditEquipment(ctx, req.(*EditEquipmentRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EquipmentService_ServiceDesc is the grpc.ServiceDesc for EquipmentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -184,12 +500,48 @@ var EquipmentService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _EquipmentService_Home_Handler,
 		},
 		{
+			MethodName: "CreateHome",
+			Handler:    _EquipmentService_CreateHome_Handler,
+		},
+		{
+			MethodName: "DeleteHome",
+			Handler:    _EquipmentService_DeleteHome_Handler,
+		},
+		{
+			MethodName: "EditHome",
+			Handler:    _EquipmentService_EditHome_Handler,
+		},
+		{
 			MethodName: "Area",
 			Handler:    _EquipmentService_Area_Handler,
 		},
 		{
+			MethodName: "CreateArea",
+			Handler:    _EquipmentService_CreateArea_Handler,
+		},
+		{
+			MethodName: "DeleteArea",
+			Handler:    _EquipmentService_DeleteArea_Handler,
+		},
+		{
+			MethodName: "EditArea",
+			Handler:    _EquipmentService_EditArea_Handler,
+		},
+		{
 			MethodName: "Equipment",
 			Handler:    _EquipmentService_Equipment_Handler,
+		},
+		{
+			MethodName: "CreateEquipment",
+			Handler:    _EquipmentService_CreateEquipment_Handler,
+		},
+		{
+			MethodName: "DeleteEquipment",
+			Handler:    _EquipmentService_DeleteEquipment_Handler,
+		},
+		{
+			MethodName: "EditEquipment",
+			Handler:    _EquipmentService_EditEquipment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

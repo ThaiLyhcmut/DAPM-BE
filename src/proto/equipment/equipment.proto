@@ -56,10 +56,77 @@ message ListEquimentRP {
   repeated EquipmentRP equipments = 1;
 }
 
+message CreateHomeRQ {
+  string homeName = 1;
+  string location = 2;
+  bool deleted = 3;
+  string createAt = 4;
+}
+
+message DeleteHomeRQ {
+  int32 id = 1;
+}
+
+message EditHomeRQ {
+  int32 id = 1;
+}
+
+message CreateAreaRQ {
+  int32 homeId = 1;
+  string name = 2;
+}
+
+message DeleteAreaRQ {
+  int32 id = 1;
+}
+
+message EditAreaRQ {
+  int32 id = 1;
+}
+
+message CreateEquipmentRQ {
+  int32 categoryId = 1;
+  int32 homeId = 2;
+  string title = 3;
+  string description = 4;
+  string timeStart = 5;
+  string timeEnd = 6;
+  bool turnOn = 7;
+  int32 cycle = 8;
+  string status = 9;
+}
+
+message DeleteEquipmentRQ {
+  int32 id = 1;
+}
+
+message EditEquipmentRQ {
+  int32 id = 1;
+}
+
+message SuccessRP {
+  string code = 1;
+  string msg = 2;
+}
 
 service EquipmentService {
+  // start home
   rpc Home(HomeRQ) returns (ListHomeRP) {}
+  rpc CreateHome(CreateHomeRQ) returns (HomeRP) {}
+  rpc DeleteHome(DeleteHomeRQ) returns (SuccessRP) {}
+  rpc EditHome(EditHomeRQ) returns (HomeRP) {}
+  // end Home
+  // start area
   rpc Area(AreaRQ) returns (ListAreaRP) {}
+  rpc CreateArea(CreateAreaRQ) returns (AreaRP) {}
+  rpc DeleteArea(DeleteAreaRQ) returns (SuccessRP) {}
+  rpc EditArea(EditAreaRQ) returns (AreaRP) {}
+  // end area
+  // start equipment
   rpc Equipment(EquipmentRQ) returns (ListEquimentRP) {}
+  rpc CreateEquipment(CreateEquipmentRQ) returns (EquipmentRP) {}
+  rpc DeleteEquipment(DeleteEquipmentRQ) returns (SuccessRP) {}
+  rpc EditEquipment(EditEquipmentRQ) returns (EquipmentRP) {}
+  // end equipment
   // rpc Actions(ActionRQ) returns (ActionRP) {}
 }
