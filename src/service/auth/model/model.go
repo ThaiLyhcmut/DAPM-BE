@@ -21,3 +21,7 @@ type Otp struct {
 	ExpiredAt time.Time `gorm:"column:expiredAt"`
 	Used      int       `gorm:"column:used"`
 }
+
+func (Otp) TableName() string {
+	return "otps"
+}

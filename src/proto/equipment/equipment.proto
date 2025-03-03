@@ -1,5 +1,65 @@
 syntax = "proto3";
 
-package auth;
+package equipment;
 
 option go_package = "github.com/protoEquipment";
+
+
+message HomeRP {
+  int32 id = 1;
+  string homeName = 2;
+  string location = 3;
+  bool deleted = 4;
+  string createAt = 5;
+}
+
+message AreaRP {
+  int32 id = 1;
+  int32 homeId = 2;
+  string name = 3;
+}
+
+message EquipmentRP {
+  int32 Id = 1;
+  int32 categoryId = 2;
+  int32 homeId = 3;
+  string title = 4;
+  string description = 5;
+  string timeStart = 6;
+  string timeEnd = 7;
+  bool turnOn = 8;
+  int32 cycle = 9;
+  string status = 10;
+}
+
+message EquipmentRQ {
+  int32 homeId = 1;
+}
+
+message HomeRQ{
+  int32 accountId = 1;
+}
+
+message AreaRQ{
+  int32 homeId = 1;
+}
+
+message ListHomeRP {
+  repeated HomeRP homes = 1;
+}
+
+message ListAreaRP {
+  repeated AreaRP areas = 1;
+}
+
+message ListEquimentRP {
+  repeated EquipmentRP equipments = 1;
+}
+
+
+service EquipmentService {
+  rpc Home(HomeRQ) returns (ListHomeRP) {}
+  rpc Area(AreaRQ) returns (ListAreaRP) {}
+  rpc Equipment(EquipmentRQ) returns (ListEquimentRP) {}
+  // rpc Actions(ActionRQ) returns (ActionRP) {}
+}

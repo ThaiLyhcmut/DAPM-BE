@@ -49,7 +49,7 @@ func main() {
 	}
 	auth, err := client.NewGRPCClient("service-auth:55555")
 	if err != nil {
-		log.Fatal("client auth error %v", err)
+		log.Fatalf("client auth error %v", err)
 	}
 	ctrl := controller.NewController(auth)
 	// Create GraphQL handler
