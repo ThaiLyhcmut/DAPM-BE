@@ -6,7 +6,7 @@ run-error:
 run-graphql:
 	go run github.com/99designs/gqlgen generate
 run-server:
-	air
+	go run server/server.go
 proto-auth:
 	protoc --go_out=. --go_opt=paths=source_relative        --go-grpc_out=. --go-grpc_opt=paths=source_relative       proto/auth/auth.proto
 proto-equipment:

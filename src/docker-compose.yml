@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/server.Dockerfile
+    image: src-server
+    env_file: 
+      - .env
+    ports:
+      - "8081:8081"
+
+  service-auth:
+    build: 
+      context: .
+      dockerfile: docker/serviceAuth.Dockerfile
+    image: src-service-auth
+    env_file: 
+      - .env
+    ports:
+      - "55555:55555"

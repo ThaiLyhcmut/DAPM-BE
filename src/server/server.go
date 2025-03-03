@@ -47,7 +47,7 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-	auth, err := client.NewGRPCClient("localhost:55555")
+	auth, err := client.NewGRPCClient("service-auth:55555")
 	if err != nil {
 		log.Fatal("client auth error %v", err)
 	}

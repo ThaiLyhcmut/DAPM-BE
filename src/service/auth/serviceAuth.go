@@ -64,7 +64,7 @@ func main() {
 	// Ensure proper cleanup
 	ctrl := controller.NewController(db)
 
-	lis, err := net.Listen("tcp", "localhost:55555") // tao port
+	lis, err := net.Listen("tcp", "0.0.0.0:55555") // tao port
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
 	}
