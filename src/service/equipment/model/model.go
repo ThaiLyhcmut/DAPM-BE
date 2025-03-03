@@ -1,14 +1,12 @@
 package model
 
-import "time"
-
 type Home struct {
-	Id        int32     `gorm:"primarykey"`
-	AccountId int32     `gorm:"column:accountId"`
-	HomeName  string    `gorm:"column:homeName"`
-	Location  string    `gorm:"column:location"`
-	Deleted   bool      `gorm:"column:deleted"`
-	CreateAt  time.Time `gorm:"column:createAt"`
+	Id        int32  `gorm:"primarykey"`
+	AccountId int32  `gorm:"column:accountId"`
+	HomeName  string `gorm:"column:homeName"`
+	Location  string `gorm:"column:location"`
+	Deleted   bool   `gorm:"column:deleted"`
+	CreatedAt string `gorm:"column:createdAt"`
 }
 
 func (Home) TableName() string {

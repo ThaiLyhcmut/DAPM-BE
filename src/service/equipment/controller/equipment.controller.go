@@ -24,15 +24,40 @@ func (C *Controller) ControllerHome(accountId int32) (*protoEquipment.ListHomeRP
 	var homeRP []*protoEquipment.HomeRP
 	for _, home := range homes {
 		homeRP = append(homeRP, &protoEquipment.HomeRP{
-			Id:       home.Id,
-			HomeName: home.HomeName,
-			Location: home.Location,
-			Deleted:  home.Deleted,
-			CreateAt: home.CreateAt.Format("2006-01-02 15:04:05"),
+			Id:        home.Id,
+			HomeName:  home.HomeName,
+			Location:  home.Location,
+			Deleted:   home.Deleted,
+			CreatedAt: home.CreatedAt,
 		})
 	}
 	return &protoEquipment.ListHomeRP{
 		Homes: homeRP,
+	}, nil
+}
+
+func (C *Controller) ControllerCreateHome(accountId int32, homeName string, location string, deleted bool, createdAt string) (*protoEquipment.HomeRP, error) {
+	home, err := C.d.CreateHome(accountId, homeName, location, deleted, createdAt)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "create home data invalid")
+	}
+	return &protoEquipment.HomeRP{
+		Id:        home.Id,
+		HomeName:  home.HomeName,
+		Location:  home.Location,
+		Deleted:   home.Deleted,
+		CreatedAt: home.CreatedAt,
+	}, nil
+}
+
+func (C *Controller) ControllerDeleteHome(id int32) (*protoEquipment.SuccessRP, error) {
+	err := C.d.DeleteHome(id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "delete home invalid")
+	}
+	return &protoEquipment.SuccessRP{
+		Code: "200",
+		Msg:  "success",
 	}, nil
 }
 
@@ -51,6 +76,29 @@ func (C *Controller) ControllerArea(homeId int32) (*protoEquipment.ListAreaRP, e
 	}
 	return &protoEquipment.ListAreaRP{
 		Areas: areaRP,
+	}, nil
+}
+
+func (C *Controller) ControllerCreateArea(homeId int32, name string) (*protoEquipment.AreaRP, error) {
+	area, err := C.d.CreateArea(homeId, name)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "error create area")
+	}
+	return &protoEquipment.AreaRP{
+		Id:     area.Id,
+		HomeId: area.HomeId,
+		Name:   area.Name,
+	}, nil
+}
+
+func (C *Controller) ControllerDeleteArea(id int32) (*protoEquipment.SuccessRP, error) {
+	err := C.d.DeleteArea(id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "error delete area")
+	}
+	return &protoEquipment.SuccessRP{
+		Code: "200",
+		Msg:  "success",
 	}, nil
 }
 
@@ -76,5 +124,34 @@ func (C *Controller) ControllerEquipment(homeId int32) (*protoEquipment.ListEqui
 	}
 	return &protoEquipment.ListEquimentRP{
 		Equipments: equipmentRP,
+	}, nil
+}
+
+func (C *Controller) ControllerCreateEquiment(categoryId int32, homeId int32, title string, description string, timeStart string, timeEnd string, cycle int32, stats string) (*protoEquipment.EquipmentRP, error) {
+	equipment, err := C.d.CreateEquipment(categoryId, homeId, title, description, timeStart, timeEnd, cycle, stats)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "homeId invalid")
+	}
+	return &protoEquipment.EquipmentRP{
+		Id:          equipment.Id,
+		CategoryId:  equipment.CategoryId,
+		HomeId:      equipment.HomeId,
+		Title:       equipment.Title,
+		Description: equipment.Description,
+		TimeStart:   equipment.TimeStart,
+		TimeEnd:     equipment.TimeEnd,
+		Cycle:       equipment.Cycle,
+		Status:      equipment.Status,
+	}, nil
+}
+
+func (C *Controller) ControllerDeleteEquipment(id int32) (*protoEquipment.SuccessRP, error) {
+	err := C.d.DeleteEquipment(id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "error delete equipment")
+	}
+	return &protoEquipment.SuccessRP{
+		Code: "200",
+		Msg:  "success",
 	}, nil
 }

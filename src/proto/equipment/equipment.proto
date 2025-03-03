@@ -10,7 +10,7 @@ message HomeRP {
   string homeName = 2;
   string location = 3;
   bool deleted = 4;
-  string createAt = 5;
+  string createdAt = 5;
 }
 
 message AreaRP {
@@ -57,10 +57,11 @@ message ListEquimentRP {
 }
 
 message CreateHomeRQ {
-  string homeName = 1;
-  string location = 2;
-  bool deleted = 3;
-  string createAt = 4;
+  int32 accountId = 1;
+  string homeName = 2;
+  string location = 3;
+  bool deleted = 4;
+  string createdAt = 5;
 }
 
 message DeleteHomeRQ {
@@ -91,7 +92,6 @@ message CreateEquipmentRQ {
   string description = 4;
   string timeStart = 5;
   string timeEnd = 6;
-  bool turnOn = 7;
   int32 cycle = 8;
   string status = 9;
 }
