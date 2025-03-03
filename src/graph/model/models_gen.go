@@ -28,3 +28,7 @@ type RegisterAccount struct {
 	Phone    string  `json:"phone"`
 	Otp      *string `json:"otp,omitempty"`
 }
+
+type TokenAccount struct {
+	Token string `json:"token"`
+}

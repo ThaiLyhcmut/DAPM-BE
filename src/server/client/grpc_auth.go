@@ -67,3 +67,10 @@ func (c *GRPCClient) Login(email, password string) (*protoAuth.AccountRP, error)
 	}
 	return c.client.Login(context.Background(), in)
 }
+
+func (c *GRPCClient) Infor(id int32) (*protoAuth.AccountRP, error) {
+	in := &protoAuth.IdA{
+		Id: id,
+	}
+	return c.client.Infor(context.Background(), in)
+}

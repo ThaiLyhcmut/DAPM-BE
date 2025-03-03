@@ -11,6 +11,10 @@ input LoginAccount {
   password: String!
 }
 
+input TokenAccount {
+  token: String!
+}
+
 input RegisterAccount {
   fullName: String!
   email: String!
@@ -26,4 +30,5 @@ type Mutation {
 
 type Query {
   xinchao: Account
+  inforAccount(account: TokenAccount!) :Account
 }

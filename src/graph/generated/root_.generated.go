@@ -55,7 +55,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Xinchao func(childComplexity int) int
+		InforAccount func(childComplexity int, account model.TokenAccount) int
+		Xinchao      func(childComplexity int) int
 	}
 }
 
@@ -137,6 +138,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RegisterAccount(childComplexity, args["account"].(model.RegisterAccount)), true
 
+	case "Query.inforAccount":
+		if e.complexity.Query.InforAccount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_inforAccount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.InforAccount(childComplexity, args["account"].(model.TokenAccount)), true
+
 	case "Query.xinchao":
 		if e.complexity.Query.Xinchao == nil {
 			break
@@ -154,6 +167,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputLoginAccount,
 		ec.unmarshalInputRegisterAccount,
+		ec.unmarshalInputTokenAccount,
 	)
 	first := true
 
@@ -264,6 +278,10 @@ input LoginAccount {
   password: String!
 }
 
+input TokenAccount {
+  token: String!
+}
+
 input RegisterAccount {
   fullName: String!
   email: String!
@@ -279,6 +297,7 @@ type Mutation {
 
 type Query {
   xinchao: Account
+  inforAccount(account: TokenAccount!) :Account
 }`, BuiltIn: false},
 	{Name: "../schema/schema.graphqls", Input: ``, BuiltIn: false},
 }

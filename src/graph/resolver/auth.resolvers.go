@@ -26,6 +26,11 @@ func (r *queryResolver) Xinchao(ctx context.Context) (*model.Account, error) {
 	panic(fmt.Errorf("not implemented: Xinchao - xinchao"))
 }
 
+// InforAccount is the resolver for the inforAccount field.
+func (r *queryResolver) InforAccount(ctx context.Context, account model.TokenAccount) (*model.Account, error) {
+	return r.Ctrl.ControllerInfor(account)
+}
+
 // Mutation returns graph.MutationResolver implementation.
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 

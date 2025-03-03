@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"ThaiLy/graph/helper"
 	"ThaiLy/graph/model"
 	"ThaiLy/server/client"
 )
@@ -20,7 +21,7 @@ func (C *Controller) ControllerRegister(account model.RegisterAccount) (*model.A
 		return nil, err
 	}
 	id := int(result.Id)
-	token := "hello"
+	token := helper.CreateJWT(id)
 	resp := &model.Account{
 		ID:       &id,
 		FullName: &result.FullName,
@@ -37,13 +38,32 @@ func (C *Controller) ControllerLogin(account model.LoginAccount) (*model.Account
 		return nil, err
 	}
 	id := int(result.Id)
-	token := "hello"
+	token := helper.CreateJWT(id)
 	resp := &model.Account{
 		ID:       &id,
 		FullName: &result.FullName,
 		Email:    &result.Email,
 		Phone:    &result.Phone,
 		Token:    &token,
+	}
+	return resp, nil
+}
+
+func (C *Controller) ControllerInfor(account model.TokenAccount) (*model.Account, error) {
+	Claims, err := helper.ParseJWT(account.Token)
+	if err != nil {
+		return nil, err
+	}
+	id := int32(Claims.ID)
+	result, err := C.auth.Infor(id)
+	if err != nil {
+		return nil, err
+	}
+	resp := &model.Account{
+		ID:       &Claims.ID,
+		FullName: &result.FullName,
+		Email:    &result.Email,
+		Phone:    &result.Phone,
 	}
 	return resp, nil
 }
