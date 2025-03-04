@@ -37,6 +37,7 @@ type ResolverRoot interface {
 	HomeQuery() HomeQueryResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
+	Subscription() SubscriptionResolver
 }
 
 type DirectiveRoot struct {
@@ -62,6 +63,11 @@ type ComplexityRoot struct {
 		HomeID    func(childComplexity int) int
 		ID        func(childComplexity int) int
 		Name      func(childComplexity int) int
+	}
+
+	Device struct {
+		ID     func(childComplexity int) int
+		TurnOn func(childComplexity int) int
 	}
 
 	Equipment struct {
@@ -108,6 +114,7 @@ type ComplexityRoot struct {
 		EidtHome        func(childComplexity int, home model.EditHome) int
 		LoginAccount    func(childComplexity int, account model.LoginAccount) int
 		RegisterAccount func(childComplexity int, account model.RegisterAccount) int
+		ToggleDevice    func(childComplexity int, device model.DeviceInput) int
 	}
 
 	Query struct {
@@ -118,6 +125,10 @@ type ComplexityRoot struct {
 	Response struct {
 		Code func(childComplexity int) int
 		Msg  func(childComplexity int) int
+	}
+
+	Subscription struct {
+		DeviceStatusUpdated func(childComplexity int) int
 	}
 }
 
@@ -223,6 +234,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AreaQuery.Name(childComplexity), true
+
+	case "Device.id":
+		if e.complexity.Device.ID == nil {
+			break
+		}
+
+		return e.complexity.Device.ID(childComplexity), true
+
+	case "Device.turnOn":
+		if e.complexity.Device.TurnOn == nil {
+			break
+		}
+
+		return e.complexity.Device.TurnOn(childComplexity), true
 
 	case "Equipment.areaId":
 		if e.complexity.Equipment.AreaID == nil {
@@ -512,6 +537,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RegisterAccount(childComplexity, args["account"].(model.RegisterAccount)), true
 
+	case "Mutation.toggleDevice":
+		if e.complexity.Mutation.ToggleDevice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_toggleDevice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ToggleDevice(childComplexity, args["device"].(model.DeviceInput)), true
+
 	case "Query.getHome":
 		if e.complexity.Query.GetHome == nil {
 			break
@@ -540,6 +577,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Response.Msg(childComplexity), true
 
+	case "Subscription.deviceStatusUpdated":
+		if e.complexity.Subscription.DeviceStatusUpdated == nil {
+			break
+		}
+
+		return e.complexity.Subscription.DeviceStatusUpdated(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -554,6 +598,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputDeleteArea,
 		ec.unmarshalInputDeleteEquipment,
 		ec.unmarshalInputDeleteHome,
+		ec.unmarshalInputDeviceInput,
 		ec.unmarshalInputEditArea,
 		ec.unmarshalInputEditHome,
 		ec.unmarshalInputLoginAccount,
@@ -601,6 +646,23 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
 			data := ec._Mutation(ctx, opCtx.Operation.SelectionSet)
 			var buf bytes.Buffer
+			data.MarshalGQL(&buf)
+
+			return &graphql.Response{
+				Data: buf.Bytes(),
+			}
+		}
+	case ast.Subscription:
+		next := ec._Subscription(ctx, opCtx.Operation.SelectionSet)
+
+		var buf bytes.Buffer
+		return func(ctx context.Context) *graphql.Response {
+			buf.Reset()
+			data := next(ctx)
+
+			if data == nil {
+				return nil
+			}
 			data.MarshalGQL(&buf)
 
 			return &graphql.Response{
@@ -774,6 +836,18 @@ input EditArea {
 }
 
 `, BuiltIn: false},
+	{Name: "../schema/kafka.graphqls", Input: `type Device {
+  id:Int!
+  turnOn: Boolean!
+}
+input DeviceInput {
+  id:Int!
+  turnOn: Boolean!
+}
+
+type Subscription {
+  deviceStatusUpdated: Device
+}`, BuiltIn: false},
 	{Name: "../schema/schema.graphqls", Input: `type Mutation {
   registerAccount(account: RegisterAccount!): Account
   LoginAccount(account: LoginAccount!): Account
@@ -785,6 +859,7 @@ input EditArea {
   deleteEquipment(equipment: DeleteEquipment!): Response
   eidtHome(home: EditHome!): Home
   editArea(area: EditArea!): Area
+  toggleDevice(device: DeviceInput!): String
 }
 
 type Query {

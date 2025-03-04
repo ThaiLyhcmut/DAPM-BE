@@ -1,0 +1,12 @@
+type Device {
+  id:Int!
+  turnOn: Boolean!
+}
+input DeviceInput {
+  id:Int!
+  turnOn: Boolean!
+}
+
+type Subscription {
+  deviceStatusUpdated: Device
+}

@@ -54,6 +54,16 @@ type DeleteHome struct {
 	ID int32 `json:"id"`
 }
 
+type Device struct {
+	ID     int32 `json:"id"`
+	TurnOn bool  `json:"turnOn"`
+}
+
+type DeviceInput struct {
+	ID     int32 `json:"id"`
+	TurnOn bool  `json:"turnOn"`
+}
+
 type EditArea struct {
 	ID     int32  `json:"id"`
 	HomeID int32  `json:"homeId"`
@@ -122,4 +132,7 @@ type RegisterAccount struct {
 type Response struct {
 	Code *string `json:"code,omitempty"`
 	Msg  *string `json:"msg,omitempty"`
+}
+
+type Subscription struct {
 }

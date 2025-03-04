@@ -60,6 +60,11 @@ func (r *mutationResolver) EditArea(ctx context.Context, area model.EditArea) (*
 	return nil, nil
 }
 
+// ToggleDevice is the resolver for the toggleDevice field.
+func (r *mutationResolver) ToggleDevice(ctx context.Context, device model.DeviceInput) (*string, error) {
+	return r.Ctrl.DeviceService(ctx, device.ID, device.TurnOn)
+}
+
 // GetHome is the resolver for the getHome field.
 func (r *queryResolver) GetHome(ctx context.Context) ([]*model.HomeQuery, error) {
 	return r.Ctrl.GetHome(ctx)

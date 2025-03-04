@@ -40,7 +40,7 @@ func main() {
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"}, // Chỉ cho phép origin cụ thể
-		AllowMethods:     []string{"POST, GET"},
+		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -59,7 +59,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("client equipment error %v", err)
 	}
-	ctrl := controller.NewController(auth, equipment)
+	kafka, err := client.NewGRPCKafkaClient("localhost:55557")
+	if err != nil {
+		log.Fatalf("client equipment error %v", err)
+	}
+	ctrl := controller.NewController(auth, equipment, kafka)
 	// Create GraphQL handler
 	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{Ctrl: ctrl}}))
 
@@ -67,7 +71,7 @@ func main() {
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
 	srv.AddTransport(transport.POST{})
-
+	srv.AddTransport(transport.Websocket{})
 	// Set query cache
 	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
 	srv.Use(extension.Introspection{})
@@ -77,7 +81,7 @@ func main() {
 
 	// Gin routes foyground and query handler
 	r.GET("/", gin.WrapH(playground.Handler("GraphQL Playground", "/query")))
-	r.POST("/query", func(c *gin.Context) {
+	r.Any("/query", func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
 		if token != "" {
 			if len(token) > 7 && strings.HasPrefix(token, "Bearer ") {
@@ -92,16 +96,16 @@ func main() {
 				c.Request = c.Request.WithContext(ctx)
 			}
 		}
-	}, gin.WrapH(srv))
-	// middlewares.RequireAuth, func(c *gin.Context) {
-	// 	account, exists := c.Get("account")
-	// 	if exists {
-	// 		// Nếu account có, thêm account vào context
-	// 		// Sử dụng custom key mà không cần ép kiểu (type assertion)
-	// 		ctx := context.WithValue(c.Request.Context(), middlewares.AccountKey, account)
-	// 		c.Request = c.Request.WithContext(ctx)
-	// 	}
-	// },
+
+		// Kiểm tra nếu là WebSocket, thì dùng srv.ServeHTTP trực tiếp
+		if strings.Contains(c.GetHeader("Upgrade"), "websocket") {
+			srv.ServeHTTP(c.Writer, c.Request)
+			return
+		}
+
+		// Nếu là HTTP bình thường thì vẫn dùng WrapH
+		gin.WrapH(srv)(c)
+	})
 
 	// Run the server
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)

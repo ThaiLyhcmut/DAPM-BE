@@ -9,6 +9,7 @@ type Mutation {
   deleteEquipment(equipment: DeleteEquipment!): Response
   eidtHome(home: EditHome!): Home
   editArea(area: EditArea!): Area
+  toggleDevice(device: DeviceInput!): String
 }
 
 type Query {

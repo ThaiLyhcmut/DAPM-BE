@@ -1,0 +1,17 @@
+syntax = "proto3";
+package kafka;
+
+option go_package = "github.com/protoKafka";
+
+service DeviceService {
+  rpc ToggleDevice(DeviceRequest) returns (DeviceResponse);
+}
+
+message DeviceRequest {
+  int32 id = 1;
+  bool turnOn = 2; // true: bật, false: tắt
+}
+
+message DeviceResponse {
+  string message = 1;
+}
