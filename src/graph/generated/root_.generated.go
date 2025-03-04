@@ -742,6 +742,7 @@ input CreateArea {
 input CreateEquiment {
   categoryId: Int!
   homeId: Int!
+  AreaId: Int!
   title: String!
   description: String
   status: String!

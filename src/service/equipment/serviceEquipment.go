@@ -55,7 +55,7 @@ func (S *service) Equipment(ctx context.Context, in *protoEquipment.EquipmentRQ)
 }
 
 func (S *service) CreateEquipment(ctx context.Context, in *protoEquipment.CreateEquipmentRQ) (*protoEquipment.EquipmentRP, error) {
-	return S.c.ControllerCreateEquiment(in.CategoryId, in.HomeId, in.Title, in.Description, in.TimeStart, in.TimeEnd, in.Cycle, in.Status)
+	return S.c.ControllerCreateEquiment(in.CategoryId, in.HomeId, in.AreaId, in.Title, in.Description, in.TimeStart, in.TimeEnd, in.Cycle, in.Status)
 }
 
 func (S *service) DeleteEquipment(ctx context.Context, in *protoEquipment.DeleteEquipmentRQ) (*protoEquipment.SuccessRP, error) {

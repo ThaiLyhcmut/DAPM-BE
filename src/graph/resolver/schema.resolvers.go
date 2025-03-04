@@ -12,62 +12,62 @@ import (
 
 // RegisterAccount is the resolver for the registerAccount field.
 func (r *mutationResolver) RegisterAccount(ctx context.Context, account model.RegisterAccount) (*model.Account, error) {
-	return r.RegisterAccount(ctx, account)
+	return r.Ctrl.ControllerRegister(account)
 }
 
 // LoginAccount is the resolver for the LoginAccount field.
 func (r *mutationResolver) LoginAccount(ctx context.Context, account model.LoginAccount) (*model.Account, error) {
-	return r.LoginAccount(ctx, account)
+	return r.Ctrl.ControllerLogin(account)
 }
 
 // CreateHome is the resolver for the createHome field.
 func (r *mutationResolver) CreateHome(ctx context.Context, home model.CreateHome) (*model.Home, error) {
-	return r.CreateHome(ctx, home)
+	return r.Ctrl.CreateHome(ctx, home)
 }
 
 // CreateArea is the resolver for the createArea field.
 func (r *mutationResolver) CreateArea(ctx context.Context, area model.CreateArea) (*model.Area, error) {
-	return r.CreateArea(ctx, area)
+	return r.Ctrl.CreateArea(ctx, area)
 }
 
 // CreateEquiment is the resolver for the createEquiment field.
 func (r *mutationResolver) CreateEquiment(ctx context.Context, equipment model.CreateEquiment) (*model.Equipment, error) {
-	return r.CreateEquiment(ctx, equipment)
+	return r.Ctrl.CreateEquiment(ctx, equipment)
 }
 
 // DeleteHome is the resolver for the deleteHome field.
 func (r *mutationResolver) DeleteHome(ctx context.Context, home model.DeleteHome) (*model.Response, error) {
-	return r.DeleteHome(ctx, home)
+	return r.Ctrl.DeleteHome(ctx, home)
 }
 
 // DeleteArea is the resolver for the deleteArea field.
 func (r *mutationResolver) DeleteArea(ctx context.Context, area model.DeleteArea) (*model.Response, error) {
-	return r.DeleteArea(ctx, area)
+	return r.Ctrl.DeleteArea(ctx, area)
 }
 
 // DeleteEquipment is the resolver for the deleteEquipment field.
 func (r *mutationResolver) DeleteEquipment(ctx context.Context, equipment model.DeleteEquipment) (*model.Response, error) {
-	return r.DeleteEquipment(ctx, equipment)
+	return r.Ctrl.DeleteEquipment(ctx, equipment)
 }
 
 // EidtHome is the resolver for the eidtHome field.
 func (r *mutationResolver) EidtHome(ctx context.Context, home model.EditHome) (*model.Home, error) {
-	return r.EidtHome(ctx, home)
+	return nil, nil
 }
 
 // EditArea is the resolver for the editArea field.
 func (r *mutationResolver) EditArea(ctx context.Context, area model.EditArea) (*model.Area, error) {
-	return r.EditArea(ctx, area)
+	return nil, nil
 }
 
 // GetHome is the resolver for the getHome field.
 func (r *queryResolver) GetHome(ctx context.Context) ([]*model.HomeQuery, error) {
-	return r.GetHome(ctx)
+	return r.Ctrl.GetHome(ctx)
 }
 
 // InforAccount is the resolver for the inforAccount field.
 func (r *queryResolver) InforAccount(ctx context.Context) (*model.Account, error) {
-	return r.InforAccount(ctx)
+	return r.Ctrl.ControllerInfor(ctx)
 }
 
 // Mutation returns generated.MutationResolver implementation.

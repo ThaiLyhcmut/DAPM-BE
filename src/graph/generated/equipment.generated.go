@@ -1477,7 +1477,7 @@ func (ec *executionContext) unmarshalInputCreateEquiment(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"categoryId", "homeId", "title", "description", "status"}
+	fieldsInOrder := [...]string{"categoryId", "homeId", "AreaId", "title", "description", "status"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -1498,6 +1498,13 @@ func (ec *executionContext) unmarshalInputCreateEquiment(ctx context.Context, ob
 				return it, err
 			}
 			it.HomeID = data
+		case "AreaId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AreaId"))
+			data, err := ec.unmarshalNInt2int32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AreaID = data
 		case "title":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
 			data, err := ec.unmarshalNString2string(ctx, v)

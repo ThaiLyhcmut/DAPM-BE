@@ -95,10 +95,11 @@ message EditAreaRQ {
 message CreateEquipmentRQ {
   int32 categoryId = 1;
   int32 homeId = 2;
-  string title = 3;
-  string description = 4;
-  string timeStart = 5;
-  string timeEnd = 6;
+  int32 AreaId = 3;
+  string title = 4;
+  string description = 5;
+  string timeStart = 6;
+  string timeEnd = 7;
   int32 cycle = 8;
   string status = 9;
 }

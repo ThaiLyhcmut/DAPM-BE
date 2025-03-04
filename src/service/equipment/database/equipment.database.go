@@ -55,11 +55,8 @@ func (D *Database) EditHome(id int32, homeName string, location string, deleted 
 }
 
 func (D *Database) CheckHome(accountId int32, id int32) (*model.Home, error) {
-	Home := &model.Home{
-		AccountId: accountId,
-		Id:        id,
-	}
-	result := D.DB.First(Home)
+	Home := &model.Home{}
+	result := D.DB.Where("accountId = ? AND id = ?", accountId, id).First(Home)
 	if result.Error != nil {
 		return nil, fmt.Errorf("error check home")
 	}
@@ -138,10 +135,11 @@ func (D *Database) GetEquipmentByHomeId(homeId int32) ([]*model.Equipment, error
 	return Equipments, nil
 }
 
-func (D *Database) CreateEquipment(categoryId int32, homeId int32, title string, description string, timeStart string, timeEnd string, cycle int32, status string) (*model.Equipment, error) {
+func (D *Database) CreateEquipment(categoryId int32, homeId int32, areaId int32, title string, description string, timeStart string, timeEnd string, cycle int32, status string) (*model.Equipment, error) {
 	Equiment := &model.Equipment{
 		CategoryId:  categoryId,
 		HomeId:      homeId,
+		AreaId:      areaId,
 		Title:       title,
 		Description: description,
 		TimeStart:   time.Now().Format("2006-01-02 15:04:05"),

@@ -31,6 +31,7 @@ type CreateArea struct {
 type CreateEquiment struct {
 	CategoryID  int32   `json:"categoryId"`
 	HomeID      int32   `json:"homeId"`
+	AreaID      int32   `json:"AreaId"`
 	Title       string  `json:"title"`
 	Description *string `json:"description,omitempty"`
 	Status      string  `json:"status"`

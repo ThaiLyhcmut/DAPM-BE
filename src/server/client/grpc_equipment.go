@@ -87,10 +87,11 @@ func (c *GRPCEquipmentClient) GetEquipment(areaId int32, homeId int32) (*protoEq
 	})
 }
 
-func (c *GRPCEquipmentClient) CreateEquipment(categoryId int32, homeId int32, title string, description string, status string) (*protoEquipment.EquipmentRP, error) {
+func (c *GRPCEquipmentClient) CreateEquipment(categoryId int32, homeId int32, areaId int32, title string, description string, status string) (*protoEquipment.EquipmentRP, error) {
 	return c.client.CreateEquipment(context.Background(), &protoEquipment.CreateEquipmentRQ{
 		CategoryId:  categoryId,
 		HomeId:      homeId,
+		AreaId:      areaId,
 		Title:       title,
 		Description: description,
 		Status:      status,

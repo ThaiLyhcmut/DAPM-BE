@@ -12,12 +12,12 @@ import (
 
 // Equipment is the resolver for the equipment field.
 func (r *areaQueryResolver) Equipment(ctx context.Context, obj *model.AreaQuery) ([]*model.Equipment, error) {
-	return r.Equipment(ctx, obj)
+	return r.Ctrl.GetEquipment(obj)
 }
 
 // Area is the resolver for the area field.
 func (r *homeQueryResolver) Area(ctx context.Context, obj *model.HomeQuery) ([]*model.AreaQuery, error) {
-	return r.Area(ctx, obj)
+	return r.Ctrl.GetArea(obj)
 }
 
 // AreaQuery returns generated.AreaQueryResolver implementation.

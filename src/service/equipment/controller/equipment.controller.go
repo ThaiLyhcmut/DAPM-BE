@@ -180,8 +180,8 @@ func (C *Controller) ControllerEquipment(areaId int32, homeId int32) (*protoEqui
 	}, nil
 }
 
-func (C *Controller) ControllerCreateEquiment(categoryId int32, homeId int32, title string, description string, timeStart string, timeEnd string, cycle int32, stats string) (*protoEquipment.EquipmentRP, error) {
-	equipment, err := C.d.CreateEquipment(categoryId, homeId, title, description, timeStart, timeEnd, cycle, stats)
+func (C *Controller) ControllerCreateEquiment(categoryId int32, homeId int32, areaId int32, title string, description string, timeStart string, timeEnd string, cycle int32, stats string) (*protoEquipment.EquipmentRP, error) {
+	equipment, err := C.d.CreateEquipment(categoryId, homeId, areaId, title, description, timeStart, timeEnd, cycle, stats)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "homeId invalid")
 	}

@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func (C *Controller) GetHome(ctx context.Context) ([]*model.Home, error) {
+func (C *Controller) GetHome(ctx context.Context) ([]*model.HomeQuery, error) {
 	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
 	fmt.Print(Claims.ID, ok)
 	if !ok {
@@ -17,9 +17,9 @@ func (C *Controller) GetHome(ctx context.Context) ([]*model.Home, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error get home")
 	}
-	var resp []*model.Home
+	var resp []*model.HomeQuery
 	for _, home := range homes.Homes {
-		resp = append(resp, &model.Home{
+		resp = append(resp, &model.HomeQuery{
 			ID:        home.Id,
 			HomeName:  &home.HomeName,
 			Location:  &home.Location,
@@ -70,7 +70,7 @@ func (C *Controller) DeleteHome(ctx context.Context, home model.DeleteHome) (*mo
 	}, nil
 }
 
-func (C *Controller) GetArea(obj *model.Home) ([]*model.Area, error) {
+func (C *Controller) GetArea(obj *model.HomeQuery) ([]*model.AreaQuery, error) {
 	if obj == nil {
 		return nil, nil
 	}
@@ -78,9 +78,9 @@ func (C *Controller) GetArea(obj *model.Home) ([]*model.Area, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error getArea")
 	}
-	var resp []*model.Area
+	var resp []*model.AreaQuery
 	for _, area := range areas.Areas {
-		resp = append(resp, &model.Area{
+		resp = append(resp, &model.AreaQuery{
 			ID:     &area.Id,
 			HomeID: &area.HomeId,
 			Name:   &area.Name,
@@ -95,7 +95,10 @@ func (C *Controller) CreateArea(ctx context.Context, area model.CreateArea) (*mo
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	// check nha
+	exitsHome, err := C.equipment.CheckHome(Claims.ID, area.HomeID)
+	if err != nil || exitsHome == nil {
+		return nil, fmt.Errorf("not exits home")
+	}
 	resp, err := C.equipment.CreateArea(area.HomeID, area.Name)
 	if err != nil {
 		return nil, fmt.Errorf("error create area")
@@ -131,7 +134,7 @@ func (C *Controller) DeleteArea(ctx context.Context, area model.DeleteArea) (*mo
 	}, nil
 }
 
-func (C *Controller) GetEquipment(obj *model.Area) ([]*model.Equipment, error) {
+func (C *Controller) GetEquipment(obj *model.AreaQuery) ([]*model.Equipment, error) {
 	equipments, err := C.equipment.GetEquipment(*obj.ID, *obj.HomeID)
 	if err != nil {
 		return nil, fmt.Errorf("error get equipment")
@@ -161,9 +164,18 @@ func (C *Controller) CreateEquiment(ctx context.Context, equipment model.CreateE
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	// check nha
-	// check khu vuc
-	resp, err := C.equipment.CreateEquipment(equipment.CategoryID, equipment.HomeID, equipment.Title, *equipment.Description, equipment.Status)
+	exitsHome, err := C.equipment.CheckHome(Claims.ID, equipment.HomeID)
+	if exitsHome == nil || err != nil {
+		return nil, fmt.Errorf("not exits home")
+	}
+	exitsArea, err := C.equipment.CheckArea(equipment.AreaID)
+	if exitsArea == nil || err != nil {
+		return nil, fmt.Errorf("not exits area")
+	}
+	if exitsArea.HomeId != equipment.HomeID {
+		return nil, fmt.Errorf(":)) bạn đừng đùa vậy")
+	}
+	resp, err := C.equipment.CreateEquipment(equipment.CategoryID, equipment.HomeID, equipment.AreaID, equipment.Title, *equipment.Description, equipment.Status)
 	if err != nil {
 		return nil, fmt.Errorf("error create area")
 	}
