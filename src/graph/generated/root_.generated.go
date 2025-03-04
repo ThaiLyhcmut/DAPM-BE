@@ -33,6 +33,8 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Area() AreaResolver
+	Home() HomeResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -49,14 +51,58 @@ type ComplexityRoot struct {
 		Token    func(childComplexity int) int
 	}
 
+	Area struct {
+		Equipment func(childComplexity int) int
+		HomeID    func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+	}
+
+	Equipment struct {
+		AreaID      func(childComplexity int) int
+		CategoryID  func(childComplexity int) int
+		Cycle       func(childComplexity int) int
+		Description func(childComplexity int) int
+		HomeID      func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Status      func(childComplexity int) int
+		TimeEnd     func(childComplexity int) int
+		TimeStart   func(childComplexity int) int
+		Title       func(childComplexity int) int
+		TurnOn      func(childComplexity int) int
+	}
+
+	Home struct {
+		AccountID func(childComplexity int) int
+		Area      func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		Deleted   func(childComplexity int) int
+		HomeName  func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Location  func(childComplexity int) int
+	}
+
 	Mutation struct {
+		CreateArea      func(childComplexity int, area model.CreateArea) int
+		CreateEquiment  func(childComplexity int, equipment model.CreateEquiment) int
+		CreateHome      func(childComplexity int, home model.CreateHome) int
+		DeleteArea      func(childComplexity int, area model.DeleteArea) int
+		DeleteEquipment func(childComplexity int, equipment model.DeleteEquipment) int
+		DeleteHome      func(childComplexity int, home model.DeleteHome) int
+		EditArea        func(childComplexity int, area model.EditArea) int
+		EidtHome        func(childComplexity int, home model.EditHome) int
 		LoginAccount    func(childComplexity int, account model.LoginAccount) int
 		RegisterAccount func(childComplexity int, account model.RegisterAccount) int
 	}
 
 	Query struct {
-		InforAccount func(childComplexity int, account model.TokenAccount) int
-		Xinchao      func(childComplexity int) int
+		GetHome      func(childComplexity int) int
+		InforAccount func(childComplexity int) int
+	}
+
+	Response struct {
+		Code func(childComplexity int) int
+		Msg  func(childComplexity int) int
 	}
 }
 
@@ -114,6 +160,256 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Token(childComplexity), true
 
+	case "Area.equipment":
+		if e.complexity.Area.Equipment == nil {
+			break
+		}
+
+		return e.complexity.Area.Equipment(childComplexity), true
+
+	case "Area.homeId":
+		if e.complexity.Area.HomeID == nil {
+			break
+		}
+
+		return e.complexity.Area.HomeID(childComplexity), true
+
+	case "Area.id":
+		if e.complexity.Area.ID == nil {
+			break
+		}
+
+		return e.complexity.Area.ID(childComplexity), true
+
+	case "Area.name":
+		if e.complexity.Area.Name == nil {
+			break
+		}
+
+		return e.complexity.Area.Name(childComplexity), true
+
+	case "Equipment.areaId":
+		if e.complexity.Equipment.AreaID == nil {
+			break
+		}
+
+		return e.complexity.Equipment.AreaID(childComplexity), true
+
+	case "Equipment.categoryId":
+		if e.complexity.Equipment.CategoryID == nil {
+			break
+		}
+
+		return e.complexity.Equipment.CategoryID(childComplexity), true
+
+	case "Equipment.cycle":
+		if e.complexity.Equipment.Cycle == nil {
+			break
+		}
+
+		return e.complexity.Equipment.Cycle(childComplexity), true
+
+	case "Equipment.description":
+		if e.complexity.Equipment.Description == nil {
+			break
+		}
+
+		return e.complexity.Equipment.Description(childComplexity), true
+
+	case "Equipment.homeId":
+		if e.complexity.Equipment.HomeID == nil {
+			break
+		}
+
+		return e.complexity.Equipment.HomeID(childComplexity), true
+
+	case "Equipment.id":
+		if e.complexity.Equipment.ID == nil {
+			break
+		}
+
+		return e.complexity.Equipment.ID(childComplexity), true
+
+	case "Equipment.status":
+		if e.complexity.Equipment.Status == nil {
+			break
+		}
+
+		return e.complexity.Equipment.Status(childComplexity), true
+
+	case "Equipment.timeEnd":
+		if e.complexity.Equipment.TimeEnd == nil {
+			break
+		}
+
+		return e.complexity.Equipment.TimeEnd(childComplexity), true
+
+	case "Equipment.timeStart":
+		if e.complexity.Equipment.TimeStart == nil {
+			break
+		}
+
+		return e.complexity.Equipment.TimeStart(childComplexity), true
+
+	case "Equipment.title":
+		if e.complexity.Equipment.Title == nil {
+			break
+		}
+
+		return e.complexity.Equipment.Title(childComplexity), true
+
+	case "Equipment.turnOn":
+		if e.complexity.Equipment.TurnOn == nil {
+			break
+		}
+
+		return e.complexity.Equipment.TurnOn(childComplexity), true
+
+	case "Home.accountId":
+		if e.complexity.Home.AccountID == nil {
+			break
+		}
+
+		return e.complexity.Home.AccountID(childComplexity), true
+
+	case "Home.area":
+		if e.complexity.Home.Area == nil {
+			break
+		}
+
+		return e.complexity.Home.Area(childComplexity), true
+
+	case "Home.createdAt":
+		if e.complexity.Home.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Home.CreatedAt(childComplexity), true
+
+	case "Home.deleted":
+		if e.complexity.Home.Deleted == nil {
+			break
+		}
+
+		return e.complexity.Home.Deleted(childComplexity), true
+
+	case "Home.homeName":
+		if e.complexity.Home.HomeName == nil {
+			break
+		}
+
+		return e.complexity.Home.HomeName(childComplexity), true
+
+	case "Home.id":
+		if e.complexity.Home.ID == nil {
+			break
+		}
+
+		return e.complexity.Home.ID(childComplexity), true
+
+	case "Home.location":
+		if e.complexity.Home.Location == nil {
+			break
+		}
+
+		return e.complexity.Home.Location(childComplexity), true
+
+	case "Mutation.createArea":
+		if e.complexity.Mutation.CreateArea == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createArea_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateArea(childComplexity, args["area"].(model.CreateArea)), true
+
+	case "Mutation.createEquiment":
+		if e.complexity.Mutation.CreateEquiment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createEquiment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateEquiment(childComplexity, args["equipment"].(model.CreateEquiment)), true
+
+	case "Mutation.createHome":
+		if e.complexity.Mutation.CreateHome == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createHome_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateHome(childComplexity, args["home"].(model.CreateHome)), true
+
+	case "Mutation.deleteArea":
+		if e.complexity.Mutation.DeleteArea == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteArea_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteArea(childComplexity, args["area"].(model.DeleteArea)), true
+
+	case "Mutation.deleteEquipment":
+		if e.complexity.Mutation.DeleteEquipment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteEquipment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteEquipment(childComplexity, args["equipment"].(model.DeleteEquipment)), true
+
+	case "Mutation.deleteHome":
+		if e.complexity.Mutation.DeleteHome == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteHome_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteHome(childComplexity, args["home"].(model.DeleteHome)), true
+
+	case "Mutation.editArea":
+		if e.complexity.Mutation.EditArea == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_editArea_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EditArea(childComplexity, args["area"].(model.EditArea)), true
+
+	case "Mutation.eidtHome":
+		if e.complexity.Mutation.EidtHome == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_eidtHome_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EidtHome(childComplexity, args["home"].(model.EditHome)), true
+
 	case "Mutation.LoginAccount":
 		if e.complexity.Mutation.LoginAccount == nil {
 			break
@@ -138,24 +434,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RegisterAccount(childComplexity, args["account"].(model.RegisterAccount)), true
 
+	case "Query.getHome":
+		if e.complexity.Query.GetHome == nil {
+			break
+		}
+
+		return e.complexity.Query.GetHome(childComplexity), true
+
 	case "Query.inforAccount":
 		if e.complexity.Query.InforAccount == nil {
 			break
 		}
 
-		args, err := ec.field_Query_inforAccount_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
+		return e.complexity.Query.InforAccount(childComplexity), true
 
-		return e.complexity.Query.InforAccount(childComplexity, args["account"].(model.TokenAccount)), true
-
-	case "Query.xinchao":
-		if e.complexity.Query.Xinchao == nil {
+	case "Response.code":
+		if e.complexity.Response.Code == nil {
 			break
 		}
 
-		return e.complexity.Query.Xinchao(childComplexity), true
+		return e.complexity.Response.Code(childComplexity), true
+
+	case "Response.msg":
+		if e.complexity.Response.Msg == nil {
+			break
+		}
+
+		return e.complexity.Response.Msg(childComplexity), true
 
 	}
 	return 0, false
@@ -165,9 +470,16 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputCreateArea,
+		ec.unmarshalInputCreateEquiment,
+		ec.unmarshalInputCreateHome,
+		ec.unmarshalInputDeleteArea,
+		ec.unmarshalInputDeleteEquipment,
+		ec.unmarshalInputDeleteHome,
+		ec.unmarshalInputEditArea,
+		ec.unmarshalInputEditHome,
 		ec.unmarshalInputLoginAccount,
 		ec.unmarshalInputRegisterAccount,
-		ec.unmarshalInputTokenAccount,
 	)
 	first := true
 
@@ -278,10 +590,6 @@ input LoginAccount {
   password: String!
 }
 
-input TokenAccount {
-  token: String!
-}
-
 input RegisterAccount {
   fullName: String!
   email: String!
@@ -290,15 +598,103 @@ input RegisterAccount {
   otp: String
 }
 
-type Mutation {
+`, BuiltIn: false},
+	{Name: "../schema/equipment.graphqls", Input: `type Home {
+  id: Int!
+  accountId: Int
+  homeName: String
+  location: String
+  deleted: Boolean
+  createdAt: String
+  area: [Area]!
+}
+
+type Area {
+  id: Int
+  homeId: Int
+  name: String
+  equipment: [Equipment]
+}
+
+type Equipment {
+  id: Int
+  categoryId: Int
+  homeId: Int
+  areaId: Int
+  title: String
+  description: String
+  timeStart: String
+  timeEnd: String
+  turnOn: Boolean
+  cycle: Int
+  status: String
+}
+
+type Response {
+  code: String
+  msg: String
+}
+
+input CreateHome {
+  homeName: String!
+  location: String!
+}
+
+input CreateArea {
+  homeId: Int!
+  name: String!
+}
+
+input CreateEquiment {
+  categoryId: Int!
+  homeId: Int!
+  title: String!
+  description: String
+  status: String!
+}
+
+input DeleteHome {
+  id: Int
+}
+
+input DeleteArea {
+  id: Int!
+}
+
+input DeleteEquipment {
+  id: Int
+}
+
+input EditHome {
+  id: Int!
+  homeName: String!
+  location: String!
+  deleted: Boolean!
+}
+
+input EditArea {
+  id: Int!
+  homeId: Int!
+  name: String!
+}
+
+`, BuiltIn: false},
+	{Name: "../schema/schema.graphqls", Input: `type Mutation {
   registerAccount(account: RegisterAccount!): Account
   LoginAccount(account: LoginAccount!): Account
+  createHome(home: CreateHome!): Home
+  createArea(area: CreateArea!): Area
+  createEquiment(equipment: CreateEquiment!): Equipment
+  deleteHome(home: DeleteHome!): Response
+  deleteArea(area: DeleteArea!): Response
+  deleteEquipment(equipment: DeleteEquipment!): Response
+  eidtHome(home: EditHome!): Home
+  editArea(area: EditArea!): Area
 }
 
 type Query {
-  xinchao: Account
-  inforAccount(account: TokenAccount!) :Account
+  getHome: [Home]
+  inforAccount: Account
 }`, BuiltIn: false},
-	{Name: "../schema/schema.graphqls", Input: ``, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

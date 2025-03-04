@@ -3,6 +3,7 @@ package controller
 import (
 	protoEquipment "ThaiLy/proto/equipment"
 	"ThaiLy/service/equipment/database"
+	"ThaiLy/service/equipment/model"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -102,10 +103,19 @@ func (C *Controller) ControllerDeleteArea(id int32) (*protoEquipment.SuccessRP, 
 	}, nil
 }
 
-func (C *Controller) ControllerEquipment(homeId int32) (*protoEquipment.ListEquimentRP, error) {
-	equipments, err := C.d.GetEquipment(homeId)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "homeId invalid")
+func (C *Controller) ControllerEquipment(areaId int32, homeId int32) (*protoEquipment.ListEquimentRP, error) {
+	var equipments []*model.Equipment
+	var err error
+	if areaId == 0 {
+		equipments, err = C.d.GetEquipmentByHomeId(homeId)
+		if err != nil {
+			return nil, status.Errorf(codes.InvalidArgument, "homeId invalid")
+		}
+	} else {
+		equipments, err = C.d.GetEquipment(areaId)
+		if err != nil {
+			return nil, status.Errorf(codes.InvalidArgument, "homeId invalid")
+		}
 	}
 	var equipmentRP []*protoEquipment.EquipmentRP
 	for _, equipment := range equipments {
@@ -136,6 +146,7 @@ func (C *Controller) ControllerCreateEquiment(categoryId int32, homeId int32, ti
 		Id:          equipment.Id,
 		CategoryId:  equipment.CategoryId,
 		HomeId:      equipment.HomeId,
+		AreaId:      equipment.AreaId,
 		Title:       equipment.Title,
 		Description: equipment.Description,
 		TimeStart:   equipment.TimeStart,

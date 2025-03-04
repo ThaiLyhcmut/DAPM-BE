@@ -10,12 +10,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type GRPCClient struct {
+type GRPCAuthClient struct {
 	conn   *grpc.ClientConn
 	client protoAuth.AuthServiceClient
 }
 
-func NewGRPCClient(addr string) (*GRPCClient, error) {
+func NewGRPCAuthClient(addr string) (*GRPCAuthClient, error) {
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
@@ -23,10 +23,10 @@ func NewGRPCClient(addr string) (*GRPCClient, error) {
 	}
 
 	client := protoAuth.NewAuthServiceClient(conn)
-	return &GRPCClient{conn: conn, client: client}, nil
+	return &GRPCAuthClient{conn: conn, client: client}, nil
 }
 
-func (c *GRPCClient) Register(fullName string, email string, password string, phone string, otp *string) (*protoAuth.AccountRP, error) {
+func (c *GRPCAuthClient) Register(fullName string, email string, password string, phone string, otp *string) (*protoAuth.AccountRP, error) {
 	// 1. Mở stream
 	stream, err := c.client.Register(context.Background())
 	if err != nil {
@@ -60,7 +60,7 @@ func (c *GRPCClient) Register(fullName string, email string, password string, ph
 	return resp, nil
 }
 
-func (c *GRPCClient) Login(email, password string) (*protoAuth.AccountRP, error) {
+func (c *GRPCAuthClient) Login(email, password string) (*protoAuth.AccountRP, error) {
 	in := &protoAuth.LoginRQ{
 		Email:    email,
 		Password: password,
@@ -68,7 +68,7 @@ func (c *GRPCClient) Login(email, password string) (*protoAuth.AccountRP, error)
 	return c.client.Login(context.Background(), in)
 }
 
-func (c *GRPCClient) Infor(id int32) (*protoAuth.AccountRP, error) {
+func (c *GRPCAuthClient) Infor(id int32) (*protoAuth.AccountRP, error) {
 	in := &protoAuth.IdA{
 		Id: id,
 	}

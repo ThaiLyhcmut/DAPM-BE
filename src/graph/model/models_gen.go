@@ -3,11 +3,85 @@
 package model
 
 type Account struct {
-	ID       *int    `json:"id,omitempty"`
+	ID       *int32  `json:"id,omitempty"`
 	FullName *string `json:"fullName,omitempty"`
 	Email    *string `json:"email,omitempty"`
 	Phone    *string `json:"phone,omitempty"`
 	Token    *string `json:"token,omitempty"`
+}
+
+type Area struct {
+	ID        *int32       `json:"id,omitempty"`
+	HomeID    *int32       `json:"homeId,omitempty"`
+	Name      *string      `json:"name,omitempty"`
+	Equipment []*Equipment `json:"equipment,omitempty"`
+}
+
+type CreateArea struct {
+	HomeID int32  `json:"homeId"`
+	Name   string `json:"name"`
+}
+
+type CreateEquiment struct {
+	CategoryID  int32   `json:"categoryId"`
+	HomeID      int32   `json:"homeId"`
+	Title       string  `json:"title"`
+	Description *string `json:"description,omitempty"`
+	Status      string  `json:"status"`
+}
+
+type CreateHome struct {
+	HomeName string `json:"homeName"`
+	Location string `json:"location"`
+}
+
+type DeleteArea struct {
+	ID int32 `json:"id"`
+}
+
+type DeleteEquipment struct {
+	ID *int32 `json:"id,omitempty"`
+}
+
+type DeleteHome struct {
+	ID *int32 `json:"id,omitempty"`
+}
+
+type EditArea struct {
+	ID     int32  `json:"id"`
+	HomeID int32  `json:"homeId"`
+	Name   string `json:"name"`
+}
+
+type EditHome struct {
+	ID       int32  `json:"id"`
+	HomeName string `json:"homeName"`
+	Location string `json:"location"`
+	Deleted  bool   `json:"deleted"`
+}
+
+type Equipment struct {
+	ID          *int32  `json:"id,omitempty"`
+	CategoryID  *int32  `json:"categoryId,omitempty"`
+	HomeID      *int32  `json:"homeId,omitempty"`
+	AreaID      *int32  `json:"areaId,omitempty"`
+	Title       *string `json:"title,omitempty"`
+	Description *string `json:"description,omitempty"`
+	TimeStart   *string `json:"timeStart,omitempty"`
+	TimeEnd     *string `json:"timeEnd,omitempty"`
+	TurnOn      *bool   `json:"turnOn,omitempty"`
+	Cycle       *int32  `json:"cycle,omitempty"`
+	Status      *string `json:"status,omitempty"`
+}
+
+type Home struct {
+	ID        int32   `json:"id"`
+	AccountID *int32  `json:"accountId,omitempty"`
+	HomeName  *string `json:"homeName,omitempty"`
+	Location  *string `json:"location,omitempty"`
+	Deleted   *bool   `json:"deleted,omitempty"`
+	CreatedAt *string `json:"createdAt,omitempty"`
+	Area      []*Area `json:"area"`
 }
 
 type LoginAccount struct {
@@ -29,6 +103,7 @@ type RegisterAccount struct {
 	Otp      *string `json:"otp,omitempty"`
 }
 
-type TokenAccount struct {
-	Token string `json:"token"`
+type Response struct {
+	Code *string `json:"code,omitempty"`
+	Msg  *string `json:"msg,omitempty"`
 }

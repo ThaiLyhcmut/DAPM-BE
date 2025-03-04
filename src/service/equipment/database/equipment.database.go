@@ -39,6 +39,21 @@ func (D *Database) DeleteHome(id int32) error {
 	return nil
 }
 
+func (D *Database) EditHome(id int32, homeName string, location string, deleted bool) (*model.Home, error) {
+	home := &model.Home{
+		Id: id,
+	}
+	result := D.DB.First(home)
+	if result.Error != nil {
+		return nil, fmt.Errorf("err edit home")
+	}
+	home.HomeName = homeName
+	home.Location = location
+	home.Deleted = deleted
+	D.DB.Save(home)
+	return home, nil
+}
+
 func (D *Database) GetAreas(homeId int32) ([]*model.Area, error) {
 	var Areas []*model.Area
 	result := D.DB.Where("homeId = ?", homeId).Find(&Areas)
@@ -68,7 +83,30 @@ func (D *Database) DeleteArea(id int32) error {
 	return nil
 }
 
-func (D *Database) GetEquipment(homeId int32) ([]*model.Equipment, error) {
+func (D *Database) EditArea(id int32, homeId int32, name string) (*model.Area, error) {
+	area := &model.Area{
+		Id: id,
+	}
+	result := D.DB.First(area)
+	if result.Error != nil {
+		return nil, fmt.Errorf("err edit area")
+	}
+	area.HomeId = homeId
+	area.Name = name
+	D.DB.Save(area)
+	return area, nil
+}
+
+func (D *Database) GetEquipment(areaId int32) ([]*model.Equipment, error) {
+	var Equipments []*model.Equipment
+	result := D.DB.Where("areaId = ?", areaId).Find(&Equipments)
+	if result.Error != nil {
+		return nil, fmt.Errorf("error get equipment")
+	}
+	return Equipments, nil
+}
+
+func (D *Database) GetEquipmentByHomeId(homeId int32) ([]*model.Equipment, error) {
 	var Equipments []*model.Equipment
 	result := D.DB.Where("homeId = ?", homeId).Find(&Equipments)
 	if result.Error != nil {
@@ -85,7 +123,7 @@ func (D *Database) CreateEquipment(categoryId int32, homeId int32, title string,
 		Description: description,
 		TimeStart:   time.Now().Format("2006-01-02 15:04:05"),
 		TimeEnd:     time.Now().Format("2006-01-02 15:04:05"),
-		Cycle:       cycle,
+		Cycle:       0,
 		Status:      status,
 	}
 	result := D.DB.Create(Equiment)

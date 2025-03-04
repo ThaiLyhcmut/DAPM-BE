@@ -1,8 +1,6 @@
 package resolver
 
-import (
-	"ThaiLy/graph/controller"
-)
+import "ThaiLy/graph/controller"
 
 // This file will not be regenerated automatically.
 //

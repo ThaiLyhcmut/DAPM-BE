@@ -149,10 +149,17 @@ models:
   # do not need to worry about interoperability and only expect small numbers.
   Int:
     model:
-      - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int32
       
   Int64:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
+  Home:
+    fields:
+      area:
+        resolver: true
+  Area:
+    fields:
+      equipment:
+        resolver: true

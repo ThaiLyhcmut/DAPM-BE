@@ -1,13 +1,17 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"ThaiLy/graph/controller"
 	"ThaiLy/graph/generated"
-	resolver "ThaiLy/graph/resolver"
+	"ThaiLy/graph/helper"
+	"ThaiLy/graph/resolver"
+
 	"ThaiLy/server/client"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -47,11 +51,15 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-	auth, err := client.NewGRPCClient("service-auth:55555")
+	auth, err := client.NewGRPCAuthClient("localhost:55555")
 	if err != nil {
 		log.Fatalf("client auth error %v", err)
 	}
-	ctrl := controller.NewController(auth)
+	equipment, err := client.NewGRPCEquipmentClient("localhost:55556")
+	if err != nil {
+		log.Fatalf("client equipment error %v", err)
+	}
+	ctrl := controller.NewController(auth, equipment)
 	// Create GraphQL handler
 	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{Ctrl: ctrl}}))
 
@@ -69,7 +77,22 @@ func main() {
 
 	// Gin routes foyground and query handler
 	r.GET("/", gin.WrapH(playground.Handler("GraphQL Playground", "/query")))
-	r.POST("/query", gin.WrapH(srv))
+	r.POST("/query", func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+		if token != "" {
+			if len(token) > 7 && strings.HasPrefix(token, "Bearer ") {
+				token = token[7:]
+				Claims, err := helper.ParseJWT(token)
+				if Claims == nil || err != nil {
+					c.JSON(401, gin.H{"message": "Invalid Authorization header"})
+					c.Abort()
+					return
+				}
+				ctx := context.WithValue(c.Request.Context(), helper.Auth, Claims)
+				c.Request = c.Request.WithContext(ctx)
+			}
+		}
+	}, gin.WrapH(srv))
 	// middlewares.RequireAuth, func(c *gin.Context) {
 	// 	account, exists := c.Get("account")
 	// 	if exists {

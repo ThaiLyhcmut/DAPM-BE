@@ -1,0 +1,17 @@
+type Mutation {
+  registerAccount(account: RegisterAccount!): Account
+  LoginAccount(account: LoginAccount!): Account
+  createHome(home: CreateHome!): Home
+  createArea(area: CreateArea!): Area
+  createEquiment(equipment: CreateEquiment!): Equipment
+  deleteHome(home: DeleteHome!): Response
+  deleteArea(area: DeleteArea!): Response
+  deleteEquipment(equipment: DeleteEquipment!): Response
+  eidtHome(home: EditHome!): Home
+  editArea(area: EditArea!): Area
+}
+
+type Query {
+  getHome: [Home]
+  inforAccount: Account
+}

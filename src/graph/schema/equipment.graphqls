@@ -1,0 +1,79 @@
+type Home {
+  id: Int!
+  accountId: Int
+  homeName: String
+  location: String
+  deleted: Boolean
+  createdAt: String
+  area: [Area]!
+}
+
+type Area {
+  id: Int
+  homeId: Int
+  name: String
+  equipment: [Equipment]
+}
+
+type Equipment {
+  id: Int
+  categoryId: Int
+  homeId: Int
+  areaId: Int
+  title: String
+  description: String
+  timeStart: String
+  timeEnd: String
+  turnOn: Boolean
+  cycle: Int
+  status: String
+}
+
+type Response {
+  code: String
+  msg: String
+}
+
+input CreateHome {
+  homeName: String!
+  location: String!
+}
+
+input CreateArea {
+  homeId: Int!
+  name: String!
+}
+
+input CreateEquiment {
+  categoryId: Int!
+  homeId: Int!
+  title: String!
+  description: String
+  status: String!
+}
+
+input DeleteHome {
+  id: Int
+}
+
+input DeleteArea {
+  id: Int!
+}
+
+input DeleteEquipment {
+  id: Int
+}
+
+input EditHome {
+  id: Int!
+  homeName: String!
+  location: String!
+  deleted: Boolean!
+}
+
+input EditArea {
+  id: Int!
+  homeId: Int!
+  name: String!
+}
+

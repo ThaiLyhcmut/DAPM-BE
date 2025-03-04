@@ -4,15 +4,13 @@ import (
 	"ThaiLy/graph/helper"
 	"ThaiLy/graph/model"
 	"ThaiLy/server/client"
+	"context"
+	"fmt"
 )
 
-type Controller struct {
-	auth *client.GRPCClient
-}
-
 // Constructor function
-func NewController(auth *client.GRPCClient) *Controller {
-	return &Controller{auth: auth}
+func NewController(auth *client.GRPCAuthClient, equipment *client.GRPCEquipmentClient) *Controller {
+	return &Controller{auth: auth, equipment: equipment}
 }
 
 func (C *Controller) ControllerRegister(account model.RegisterAccount) (*model.Account, error) {
@@ -20,10 +18,9 @@ func (C *Controller) ControllerRegister(account model.RegisterAccount) (*model.A
 	if err != nil {
 		return nil, err
 	}
-	id := int(result.Id)
-	token := helper.CreateJWT(id)
+	token := helper.CreateJWT(result.Id)
 	resp := &model.Account{
-		ID:       &id,
+		ID:       &result.Id,
 		FullName: &result.FullName,
 		Email:    &result.Email,
 		Phone:    &result.Phone,
@@ -37,10 +34,9 @@ func (C *Controller) ControllerLogin(account model.LoginAccount) (*model.Account
 	if err != nil {
 		return nil, err
 	}
-	id := int(result.Id)
-	token := helper.CreateJWT(id)
+	token := helper.CreateJWT(result.Id)
 	resp := &model.Account{
-		ID:       &id,
+		ID:       &result.Id,
 		FullName: &result.FullName,
 		Email:    &result.Email,
 		Phone:    &result.Phone,
@@ -49,10 +45,10 @@ func (C *Controller) ControllerLogin(account model.LoginAccount) (*model.Account
 	return resp, nil
 }
 
-func (C *Controller) ControllerInfor(account model.TokenAccount) (*model.Account, error) {
-	Claims, err := helper.ParseJWT(account.Token)
-	if err != nil {
-		return nil, err
+func (C *Controller) ControllerInfor(ctx context.Context) (*model.Account, error) {
+	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
+	if !ok {
+		return nil, fmt.Errorf("Unauthorzation")
 	}
 	id := int32(Claims.ID)
 	result, err := C.auth.Infor(id)

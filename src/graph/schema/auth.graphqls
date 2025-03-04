@@ -11,10 +11,6 @@ input LoginAccount {
   password: String!
 }
 
-input TokenAccount {
-  token: String!
-}
-
 input RegisterAccount {
   fullName: String!
   email: String!
@@ -23,12 +19,3 @@ input RegisterAccount {
   otp: String
 }
 
-type Mutation {
-  registerAccount(account: RegisterAccount!): Account
-  LoginAccount(account: LoginAccount!): Account
-}
-
-type Query {
-  xinchao: Account
-  inforAccount(account: TokenAccount!) :Account
-}

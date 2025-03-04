@@ -51,7 +51,7 @@ func (S *service) EditArea(ctx context.Context, in *protoEquipment.EditAreaRQ) (
 }
 
 func (S *service) Equipment(ctx context.Context, in *protoEquipment.EquipmentRQ) (*protoEquipment.ListEquimentRP, error) {
-	return S.c.ControllerEquipment(in.GetHomeId())
+	return S.c.ControllerEquipment(in.AreaId, in.HomeId)
 }
 
 func (S *service) CreateEquipment(ctx context.Context, in *protoEquipment.CreateEquipmentRQ) (*protoEquipment.EquipmentRP, error) {

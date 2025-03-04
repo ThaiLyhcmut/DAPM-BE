@@ -23,17 +23,19 @@ message EquipmentRP {
   int32 Id = 1;
   int32 categoryId = 2;
   int32 homeId = 3;
-  string title = 4;
-  string description = 5;
-  string timeStart = 6;
-  string timeEnd = 7;
-  bool turnOn = 8;
-  int32 cycle = 9;
-  string status = 10;
+  int32 areaId = 4;
+  string title = 5;
+  string description = 6;
+  string timeStart = 7;
+  string timeEnd = 8;
+  bool turnOn = 9;
+  int32 cycle = 10;
+  string status = 11;
 }
 
 message EquipmentRQ {
-  int32 homeId = 1;
+  int32 areaId = 1;
+  int32 homeId = 2;
 }
 
 message HomeRQ{
@@ -70,6 +72,9 @@ message DeleteHomeRQ {
 
 message EditHomeRQ {
   int32 id = 1;
+  string homeName = 2;
+  string location = 3;
+  bool deleted = 4;
 }
 
 message CreateAreaRQ {
@@ -83,6 +88,8 @@ message DeleteAreaRQ {
 
 message EditAreaRQ {
   int32 id = 1;
+  int32 homeId = 2;
+  string name = 3;
 }
 
 message CreateEquipmentRQ {
@@ -102,6 +109,10 @@ message DeleteEquipmentRQ {
 
 message EditEquipmentRQ {
   int32 id = 1;
+  int32 categoryId = 2;
+  int32 homeId = 3;
+  string title = 4;
+  string description = 5;
 }
 
 message SuccessRP {
