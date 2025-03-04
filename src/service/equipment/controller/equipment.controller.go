@@ -62,6 +62,49 @@ func (C *Controller) ControllerDeleteHome(id int32) (*protoEquipment.SuccessRP, 
 	}, nil
 }
 
+func (C *Controller) ControllerCheckHome(accountId int32, id int32) (*protoEquipment.HomeRP, error) {
+	home, err := C.d.CheckHome(accountId, id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "check home invalid")
+	}
+	return &protoEquipment.HomeRP{
+		Id:        home.Id,
+		HomeName:  home.HomeName,
+		Location:  home.Location,
+		Deleted:   home.Deleted,
+		CreatedAt: home.CreatedAt,
+	}, nil
+}
+func (C *Controller) ControllercheckArea(id int32) (*protoEquipment.AreaRP, error) {
+	area, err := C.d.CheckArea(id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "check home invalid")
+	}
+	return &protoEquipment.AreaRP{
+		Id:     area.Id,
+		HomeId: area.HomeId,
+		Name:   area.Name,
+	}, nil
+}
+func (C *Controller) ControllerCheckEquipment(id int32) (*protoEquipment.EquipmentRP, error) {
+	equipment, err := C.d.CheckEquipment(id)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "check home invalid")
+	}
+	return &protoEquipment.EquipmentRP{
+		Id:          equipment.Id,
+		CategoryId:  equipment.CategoryId,
+		HomeId:      equipment.HomeId,
+		Title:       equipment.Title,
+		Description: equipment.Description,
+		TimeStart:   equipment.TimeStart,
+		TimeEnd:     equipment.TimeEnd,
+		TurnOn:      equipment.TurnOn,
+		Cycle:       equipment.Cycle,
+		Status:      equipment.Status,
+	}, nil
+}
+
 func (C *Controller) ControllerArea(homeId int32) (*protoEquipment.ListAreaRP, error) {
 	areas, err := C.d.GetAreas(homeId)
 	if err != nil {

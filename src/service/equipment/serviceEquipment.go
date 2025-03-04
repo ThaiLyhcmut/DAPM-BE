@@ -66,6 +66,16 @@ func (S *service) EditEquipment(ctx context.Context, in *protoEquipment.EditEqui
 	return nil, nil
 }
 
+func (S *service) CheckHome(ctx context.Context, in *protoEquipment.CheckHomeRQ) (*protoEquipment.HomeRP, error) {
+	return S.c.ControllerCheckHome(in.AccountId, in.Id)
+}
+func (S *service) CheckArea(ctx context.Context, in *protoEquipment.CheckAreaRQ) (*protoEquipment.AreaRP, error) {
+	return S.c.ControllercheckArea(in.Id)
+}
+func (S *service) CheckEquipment(ctx context.Context, in *protoEquipment.CheckEquipmentRQ) (*protoEquipment.EquipmentRP, error) {
+	return S.c.ControllerCheckEquipment(in.Id)
+}
+
 func main() {
 	godotenv.Load()
 	db := database.InitDB()

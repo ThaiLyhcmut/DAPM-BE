@@ -30,6 +30,46 @@ func (C *Controller) GetHome(ctx context.Context) ([]*model.Home, error) {
 	return resp, nil
 }
 
+func (C *Controller) CreateHome(ctx context.Context, home model.CreateHome) (*model.Home, error) {
+	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
+	fmt.Print(Claims.ID, ok)
+	if !ok {
+		return nil, fmt.Errorf("Unauthorzition")
+	}
+	resp, err := C.equipment.CreateHome(Claims.ID, home.HomeName, home.Location)
+	if err != nil {
+		return nil, fmt.Errorf("error create home")
+	}
+	return &model.Home{
+		ID:        resp.Id,
+		AccountID: &Claims.ID,
+		HomeName:  &resp.HomeName,
+		Location:  &resp.Location,
+		Deleted:   &resp.Deleted,
+		CreatedAt: &resp.CreatedAt,
+	}, nil
+}
+
+func (C *Controller) DeleteHome(ctx context.Context, home model.DeleteHome) (*model.Response, error) {
+	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
+	fmt.Print(Claims.ID, ok)
+	if !ok {
+		return nil, fmt.Errorf("Unauthorzition")
+	}
+	exitsHome, err := C.equipment.CheckHome(Claims.ID, home.ID)
+	if err != nil || exitsHome == nil {
+		return nil, fmt.Errorf("error check home")
+	}
+	resp, err := C.equipment.DeleteHome(home.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Response{
+		Code: &resp.Code,
+		Msg:  &resp.Msg,
+	}, nil
+}
+
 func (C *Controller) GetArea(obj *model.Home) ([]*model.Area, error) {
 	if obj == nil {
 		return nil, nil
@@ -47,6 +87,48 @@ func (C *Controller) GetArea(obj *model.Home) ([]*model.Area, error) {
 		})
 	}
 	return resp, nil
+}
+
+func (C *Controller) CreateArea(ctx context.Context, area model.CreateArea) (*model.Area, error) {
+	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
+	fmt.Print(Claims.ID, ok)
+	if !ok {
+		return nil, fmt.Errorf("Unauthorzition")
+	}
+	// check nha
+	resp, err := C.equipment.CreateArea(area.HomeID, area.Name)
+	if err != nil {
+		return nil, fmt.Errorf("error create area")
+	}
+	return &model.Area{
+		ID:     &resp.Id,
+		HomeID: &resp.HomeId,
+		Name:   &resp.Name,
+	}, nil
+}
+
+func (C *Controller) DeleteArea(ctx context.Context, area model.DeleteArea) (*model.Response, error) {
+	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
+	fmt.Print(Claims.ID, ok)
+	if !ok {
+		return nil, fmt.Errorf("Unauthorzition")
+	}
+	exitsArea, err := C.equipment.CheckArea(area.ID)
+	if err != nil || exitsArea == nil {
+		return nil, fmt.Errorf("error check Area")
+	}
+	exitsHome, err := C.equipment.CheckHome(Claims.ID, exitsArea.HomeId)
+	if err != nil || exitsHome == nil {
+		return nil, fmt.Errorf("error check home")
+	}
+	resp, err := C.equipment.DeleteArea(area.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Response{
+		Code: &resp.Code,
+		Msg:  &resp.Msg,
+	}, nil
 }
 
 func (C *Controller) GetEquipment(obj *model.Area) ([]*model.Equipment, error) {
@@ -71,4 +153,55 @@ func (C *Controller) GetEquipment(obj *model.Area) ([]*model.Equipment, error) {
 		})
 	}
 	return resp, nil
+}
+
+func (C *Controller) CreateEquiment(ctx context.Context, equipment model.CreateEquiment) (*model.Equipment, error) {
+	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
+	fmt.Print(Claims.ID, ok)
+	if !ok {
+		return nil, fmt.Errorf("Unauthorzition")
+	}
+	// check nha
+	// check khu vuc
+	resp, err := C.equipment.CreateEquipment(equipment.CategoryID, equipment.HomeID, equipment.Title, *equipment.Description, equipment.Status)
+	if err != nil {
+		return nil, fmt.Errorf("error create area")
+	}
+	return &model.Equipment{
+		ID:          &resp.Id,
+		CategoryID:  &resp.CategoryId,
+		HomeID:      &resp.HomeId,
+		AreaID:      &resp.AreaId,
+		Title:       &resp.Title,
+		Description: &resp.Description,
+		TimeStart:   &resp.TimeStart,
+		TimeEnd:     &resp.TimeEnd,
+		TurnOn:      &resp.TurnOn,
+		Cycle:       &resp.Cycle,
+		Status:      &resp.Status,
+	}, nil
+}
+
+func (C *Controller) DeleteEquipment(ctx context.Context, equipment model.DeleteEquipment) (*model.Response, error) {
+	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
+	fmt.Print(Claims.ID, ok)
+	if !ok {
+		return nil, fmt.Errorf("Unauthorzition")
+	}
+	exitsEquipment, err := C.equipment.CheckEquipment(equipment.ID)
+	if err != nil || exitsEquipment == nil {
+		return nil, fmt.Errorf("error check Area")
+	}
+	exitsHome, err := C.equipment.CheckHome(Claims.ID, exitsEquipment.HomeId)
+	if err != nil || exitsHome == nil {
+		return nil, fmt.Errorf("error check home")
+	}
+	resp, err := C.equipment.DeleteEquipment(equipment.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Response{
+		Code: &resp.Code,
+		Msg:  &resp.Msg,
+	}, nil
 }

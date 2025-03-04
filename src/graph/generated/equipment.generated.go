@@ -17,11 +17,11 @@ import (
 
 // region    ************************** generated!.gotpl **************************
 
-type AreaResolver interface {
-	Equipment(ctx context.Context, obj *model.Area) ([]*model.Equipment, error)
+type AreaQueryResolver interface {
+	Equipment(ctx context.Context, obj *model.AreaQuery) ([]*model.Equipment, error)
 }
-type HomeResolver interface {
-	Area(ctx context.Context, obj *model.Home) ([]*model.Area, error)
+type HomeQueryResolver interface {
+	Area(ctx context.Context, obj *model.HomeQuery) ([]*model.AreaQuery, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -159,8 +159,8 @@ func (ec *executionContext) fieldContext_Area_name(_ context.Context, field grap
 	return fc, nil
 }
 
-func (ec *executionContext) _Area_equipment(ctx context.Context, field graphql.CollectedField, obj *model.Area) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Area_equipment(ctx, field)
+func (ec *executionContext) _AreaQuery_id(ctx context.Context, field graphql.CollectedField, obj *model.AreaQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AreaQuery_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -173,7 +173,130 @@ func (ec *executionContext) _Area_equipment(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Area().Equipment(rctx, obj)
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AreaQuery_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AreaQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AreaQuery_homeId(ctx context.Context, field graphql.CollectedField, obj *model.AreaQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AreaQuery_homeId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HomeID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AreaQuery_homeId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AreaQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AreaQuery_name(ctx context.Context, field graphql.CollectedField, obj *model.AreaQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AreaQuery_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AreaQuery_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AreaQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AreaQuery_equipment(ctx context.Context, field graphql.CollectedField, obj *model.AreaQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AreaQuery_equipment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AreaQuery().Equipment(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -187,9 +310,9 @@ func (ec *executionContext) _Area_equipment(ctx context.Context, field graphql.C
 	return ec.marshalOEquipment2ᚕᚖThaiLyᚋgraphᚋmodelᚐEquipment(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Area_equipment(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AreaQuery_equipment(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Area",
+		Object:     "AreaQuery",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
@@ -924,8 +1047,8 @@ func (ec *executionContext) fieldContext_Home_createdAt(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Home_area(ctx context.Context, field graphql.CollectedField, obj *model.Home) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Home_area(ctx, field)
+func (ec *executionContext) _HomeQuery_id(ctx context.Context, field graphql.CollectedField, obj *model.HomeQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_HomeQuery_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -938,7 +1061,7 @@ func (ec *executionContext) _Home_area(ctx context.Context, field graphql.Collec
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Home().Area(rctx, obj)
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -950,29 +1073,278 @@ func (ec *executionContext) _Home_area(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Area)
+	res := resTmp.(int32)
 	fc.Result = res
-	return ec.marshalNArea2ᚕᚖThaiLyᚋgraphᚋmodelᚐArea(ctx, field.Selections, res)
+	return ec.marshalNInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Home_area(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_HomeQuery_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Home",
+		Object:     "HomeQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _HomeQuery_accountId(ctx context.Context, field graphql.CollectedField, obj *model.HomeQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_HomeQuery_accountId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccountID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_HomeQuery_accountId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "HomeQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _HomeQuery_homeName(ctx context.Context, field graphql.CollectedField, obj *model.HomeQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_HomeQuery_homeName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HomeName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_HomeQuery_homeName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "HomeQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _HomeQuery_location(ctx context.Context, field graphql.CollectedField, obj *model.HomeQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_HomeQuery_location(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Location, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_HomeQuery_location(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "HomeQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _HomeQuery_deleted(ctx context.Context, field graphql.CollectedField, obj *model.HomeQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_HomeQuery_deleted(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Deleted, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_HomeQuery_deleted(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "HomeQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _HomeQuery_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.HomeQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_HomeQuery_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_HomeQuery_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "HomeQuery",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _HomeQuery_area(ctx context.Context, field graphql.CollectedField, obj *model.HomeQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_HomeQuery_area(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.HomeQuery().Area(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.AreaQuery)
+	fc.Result = res
+	return ec.marshalNAreaQuery2ᚕᚖThaiLyᚋgraphᚋmodelᚐAreaQuery(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_HomeQuery_area(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "HomeQuery",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Area_id(ctx, field)
+				return ec.fieldContext_AreaQuery_id(ctx, field)
 			case "homeId":
-				return ec.fieldContext_Area_homeId(ctx, field)
+				return ec.fieldContext_AreaQuery_homeId(ctx, field)
 			case "name":
-				return ec.fieldContext_Area_name(ctx, field)
+				return ec.fieldContext_AreaQuery_name(ctx, field)
 			case "equipment":
-				return ec.fieldContext_Area_equipment(ctx, field)
+				return ec.fieldContext_AreaQuery_equipment(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Area", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type AreaQuery", field.Name)
 		},
 	}
 	return fc, nil
@@ -1230,7 +1602,7 @@ func (ec *executionContext) unmarshalInputDeleteEquipment(ctx context.Context, o
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -1257,7 +1629,7 @@ func (ec *executionContext) unmarshalInputDeleteHome(ctx context.Context, obj an
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			data, err := ec.unmarshalNInt2int32(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -1382,6 +1754,46 @@ func (ec *executionContext) _Area(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = ec._Area_homeId(ctx, field, obj)
 		case "name":
 			out.Values[i] = ec._Area_name(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var areaQueryImplementors = []string{"AreaQuery"}
+
+func (ec *executionContext) _AreaQuery(ctx context.Context, sel ast.SelectionSet, obj *model.AreaQuery) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, areaQueryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AreaQuery")
+		case "id":
+			out.Values[i] = ec._AreaQuery_id(ctx, field, obj)
+		case "homeId":
+			out.Values[i] = ec._AreaQuery_homeId(ctx, field, obj)
+		case "name":
+			out.Values[i] = ec._AreaQuery_name(ctx, field, obj)
 		case "equipment":
 			field := field
 
@@ -1391,7 +1803,7 @@ func (ec *executionContext) _Area(ctx context.Context, sel ast.SelectionSet, obj
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Area_equipment(ctx, field, obj)
+				res = ec._AreaQuery_equipment(ctx, field, obj)
 				return res
 			}
 
@@ -1508,7 +1920,7 @@ func (ec *executionContext) _Home(ctx context.Context, sel ast.SelectionSet, obj
 		case "id":
 			out.Values[i] = ec._Home_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "accountId":
 			out.Values[i] = ec._Home_accountId(ctx, field, obj)
@@ -1520,6 +1932,55 @@ func (ec *executionContext) _Home(ctx context.Context, sel ast.SelectionSet, obj
 			out.Values[i] = ec._Home_deleted(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._Home_createdAt(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var homeQueryImplementors = []string{"HomeQuery"}
+
+func (ec *executionContext) _HomeQuery(ctx context.Context, sel ast.SelectionSet, obj *model.HomeQuery) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, homeQueryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("HomeQuery")
+		case "id":
+			out.Values[i] = ec._HomeQuery_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "accountId":
+			out.Values[i] = ec._HomeQuery_accountId(ctx, field, obj)
+		case "homeName":
+			out.Values[i] = ec._HomeQuery_homeName(ctx, field, obj)
+		case "location":
+			out.Values[i] = ec._HomeQuery_location(ctx, field, obj)
+		case "deleted":
+			out.Values[i] = ec._HomeQuery_deleted(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._HomeQuery_createdAt(ctx, field, obj)
 		case "area":
 			field := field
 
@@ -1529,7 +1990,7 @@ func (ec *executionContext) _Home(ctx context.Context, sel ast.SelectionSet, obj
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Home_area(ctx, field, obj)
+				res = ec._HomeQuery_area(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -1621,7 +2082,7 @@ func (ec *executionContext) _Response(ctx context.Context, sel ast.SelectionSet,
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNArea2ᚕᚖThaiLyᚋgraphᚋmodelᚐArea(ctx context.Context, sel ast.SelectionSet, v []*model.Area) graphql.Marshaler {
+func (ec *executionContext) marshalNAreaQuery2ᚕᚖThaiLyᚋgraphᚋmodelᚐAreaQuery(ctx context.Context, sel ast.SelectionSet, v []*model.AreaQuery) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -1645,7 +2106,7 @@ func (ec *executionContext) marshalNArea2ᚕᚖThaiLyᚋgraphᚋmodelᚐArea(ctx
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOArea2ᚖThaiLyᚋgraphᚋmodelᚐArea(ctx, sel, v[i])
+			ret[i] = ec.marshalOAreaQuery2ᚖThaiLyᚋgraphᚋmodelᚐAreaQuery(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -1706,6 +2167,13 @@ func (ec *executionContext) marshalOArea2ᚖThaiLyᚋgraphᚋmodelᚐArea(ctx co
 	return ec._Area(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOAreaQuery2ᚖThaiLyᚋgraphᚋmodelᚐAreaQuery(ctx context.Context, sel ast.SelectionSet, v *model.AreaQuery) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AreaQuery(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOEquipment2ᚕᚖThaiLyᚋgraphᚋmodelᚐEquipment(ctx context.Context, sel ast.SelectionSet, v []*model.Equipment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -1754,7 +2222,14 @@ func (ec *executionContext) marshalOEquipment2ᚖThaiLyᚋgraphᚋmodelᚐEquipm
 	return ec._Equipment(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOHome2ᚕᚖThaiLyᚋgraphᚋmodelᚐHome(ctx context.Context, sel ast.SelectionSet, v []*model.Home) graphql.Marshaler {
+func (ec *executionContext) marshalOHome2ᚖThaiLyᚋgraphᚋmodelᚐHome(ctx context.Context, sel ast.SelectionSet, v *model.Home) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Home(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOHomeQuery2ᚕᚖThaiLyᚋgraphᚋmodelᚐHomeQuery(ctx context.Context, sel ast.SelectionSet, v []*model.HomeQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -1781,7 +2256,7 @@ func (ec *executionContext) marshalOHome2ᚕᚖThaiLyᚋgraphᚋmodelᚐHome(ctx
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOHome2ᚖThaiLyᚋgraphᚋmodelᚐHome(ctx, sel, v[i])
+			ret[i] = ec.marshalOHomeQuery2ᚖThaiLyᚋgraphᚋmodelᚐHomeQuery(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -1795,11 +2270,11 @@ func (ec *executionContext) marshalOHome2ᚕᚖThaiLyᚋgraphᚋmodelᚐHome(ctx
 	return ret
 }
 
-func (ec *executionContext) marshalOHome2ᚖThaiLyᚋgraphᚋmodelᚐHome(ctx context.Context, sel ast.SelectionSet, v *model.Home) graphql.Marshaler {
+func (ec *executionContext) marshalOHomeQuery2ᚖThaiLyᚋgraphᚋmodelᚐHomeQuery(ctx context.Context, sel ast.SelectionSet, v *model.HomeQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._Home(ctx, sel, v)
+	return ec._HomeQuery(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOResponse2ᚖThaiLyᚋgraphᚋmodelᚐResponse(ctx context.Context, sel ast.SelectionSet, v *model.Response) graphql.Marshaler {

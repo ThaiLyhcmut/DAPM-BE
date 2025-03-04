@@ -11,6 +11,12 @@ type Account struct {
 }
 
 type Area struct {
+	ID     *int32  `json:"id,omitempty"`
+	HomeID *int32  `json:"homeId,omitempty"`
+	Name   *string `json:"name,omitempty"`
+}
+
+type AreaQuery struct {
 	ID        *int32       `json:"id,omitempty"`
 	HomeID    *int32       `json:"homeId,omitempty"`
 	Name      *string      `json:"name,omitempty"`
@@ -40,11 +46,11 @@ type DeleteArea struct {
 }
 
 type DeleteEquipment struct {
-	ID *int32 `json:"id,omitempty"`
+	ID int32 `json:"id"`
 }
 
 type DeleteHome struct {
-	ID *int32 `json:"id,omitempty"`
+	ID int32 `json:"id"`
 }
 
 type EditArea struct {
@@ -81,7 +87,16 @@ type Home struct {
 	Location  *string `json:"location,omitempty"`
 	Deleted   *bool   `json:"deleted,omitempty"`
 	CreatedAt *string `json:"createdAt,omitempty"`
-	Area      []*Area `json:"area"`
+}
+
+type HomeQuery struct {
+	ID        int32        `json:"id"`
+	AccountID *int32       `json:"accountId,omitempty"`
+	HomeName  *string      `json:"homeName,omitempty"`
+	Location  *string      `json:"location,omitempty"`
+	Deleted   *bool        `json:"deleted,omitempty"`
+	CreatedAt *string      `json:"createdAt,omitempty"`
+	Area      []*AreaQuery `json:"area"`
 }
 
 type LoginAccount struct {

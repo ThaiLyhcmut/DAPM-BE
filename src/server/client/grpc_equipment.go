@@ -38,6 +38,23 @@ func (c *GRPCEquipmentClient) CreateHome(accountId int32, homeName string, locat
 	})
 }
 
+func (c *GRPCEquipmentClient) CheckHome(accountId int32, id int32) (*protoEquipment.HomeRP, error) {
+	return c.client.CheckHome(context.Background(), &protoEquipment.CheckHomeRQ{
+		AccountId: accountId,
+		Id:        id,
+	})
+}
+func (c *GRPCEquipmentClient) CheckArea(id int32) (*protoEquipment.AreaRP, error) {
+	return c.client.CheckArea(context.Background(), &protoEquipment.CheckAreaRQ{
+		Id: id,
+	})
+}
+func (c *GRPCEquipmentClient) CheckEquipment(id int32) (*protoEquipment.EquipmentRP, error) {
+	return c.client.CheckEquipment(context.Background(), &protoEquipment.CheckEquipmentRQ{
+		Id: id,
+	})
+}
+
 func (c *GRPCEquipmentClient) DeleteHome(id int32) (*protoEquipment.SuccessRP, error) {
 	return c.client.DeleteHome(context.Background(), &protoEquipment.DeleteHomeRQ{
 		Id: id,

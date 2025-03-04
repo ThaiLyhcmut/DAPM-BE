@@ -54,6 +54,18 @@ func (D *Database) EditHome(id int32, homeName string, location string, deleted 
 	return home, nil
 }
 
+func (D *Database) CheckHome(accountId int32, id int32) (*model.Home, error) {
+	Home := &model.Home{
+		AccountId: accountId,
+		Id:        id,
+	}
+	result := D.DB.First(Home)
+	if result.Error != nil {
+		return nil, fmt.Errorf("error check home")
+	}
+	return Home, nil
+}
+
 func (D *Database) GetAreas(homeId int32) ([]*model.Area, error) {
 	var Areas []*model.Area
 	result := D.DB.Where("homeId = ?", homeId).Find(&Areas)
@@ -94,6 +106,17 @@ func (D *Database) EditArea(id int32, homeId int32, name string) (*model.Area, e
 	area.HomeId = homeId
 	area.Name = name
 	D.DB.Save(area)
+	return area, nil
+}
+
+func (D *Database) CheckArea(id int32) (*model.Area, error) {
+	area := &model.Area{
+		Id: id,
+	}
+	result := D.DB.First(area)
+	if result.Error != nil {
+		return nil, fmt.Errorf("error check area")
+	}
 	return area, nil
 }
 
@@ -139,4 +162,15 @@ func (D *Database) DeleteEquipment(id int32) error {
 		return fmt.Errorf("error delete equipment")
 	}
 	return nil
+}
+
+func (D *Database) CheckEquipment(id int32) (*model.Equipment, error) {
+	equipment := &model.Equipment{
+		Id: id,
+	}
+	result := D.DB.First(equipment)
+	if result.Error != nil {
+		return nil, fmt.Errorf("error check equipment")
+	}
+	return equipment, nil
 }

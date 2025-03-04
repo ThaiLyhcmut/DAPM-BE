@@ -11,20 +11,20 @@ import (
 )
 
 // Equipment is the resolver for the equipment field.
-func (r *areaResolver) Equipment(ctx context.Context, obj *model.Area) ([]*model.Equipment, error) {
-	return r.Ctrl.GetEquipment(obj)
+func (r *areaQueryResolver) Equipment(ctx context.Context, obj *model.AreaQuery) ([]*model.Equipment, error) {
+	return r.Equipment(ctx, obj)
 }
 
 // Area is the resolver for the area field.
-func (r *homeResolver) Area(ctx context.Context, obj *model.Home) ([]*model.Area, error) {
-	return r.Ctrl.GetArea(obj)
+func (r *homeQueryResolver) Area(ctx context.Context, obj *model.HomeQuery) ([]*model.AreaQuery, error) {
+	return r.Area(ctx, obj)
 }
 
-// Area returns generated.AreaResolver implementation.
-func (r *Resolver) Area() generated.AreaResolver { return &areaResolver{r} }
+// AreaQuery returns generated.AreaQueryResolver implementation.
+func (r *Resolver) AreaQuery() generated.AreaQueryResolver { return &areaQueryResolver{r} }
 
-// Home returns generated.HomeResolver implementation.
-func (r *Resolver) Home() generated.HomeResolver { return &homeResolver{r} }
+// HomeQuery returns generated.HomeQueryResolver implementation.
+func (r *Resolver) HomeQuery() generated.HomeQueryResolver { return &homeQueryResolver{r} }
 
-type areaResolver struct{ *Resolver }
-type homeResolver struct{ *Resolver }
+type areaQueryResolver struct{ *Resolver }
+type homeQueryResolver struct{ *Resolver }

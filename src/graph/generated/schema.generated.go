@@ -29,7 +29,7 @@ type MutationResolver interface {
 	EditArea(ctx context.Context, area model.EditArea) (*model.Area, error)
 }
 type QueryResolver interface {
-	GetHome(ctx context.Context) ([]*model.Home, error)
+	GetHome(ctx context.Context) ([]*model.HomeQuery, error)
 	InforAccount(ctx context.Context) (*model.Account, error)
 }
 
@@ -529,8 +529,6 @@ func (ec *executionContext) fieldContext_Mutation_createHome(ctx context.Context
 				return ec.fieldContext_Home_deleted(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Home_createdAt(ctx, field)
-			case "area":
-				return ec.fieldContext_Home_area(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Home", field.Name)
 		},
@@ -591,8 +589,6 @@ func (ec *executionContext) fieldContext_Mutation_createArea(ctx context.Context
 				return ec.fieldContext_Area_homeId(ctx, field)
 			case "name":
 				return ec.fieldContext_Area_name(ctx, field)
-			case "equipment":
-				return ec.fieldContext_Area_equipment(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Area", field.Name)
 		},
@@ -909,8 +905,6 @@ func (ec *executionContext) fieldContext_Mutation_eidtHome(ctx context.Context, 
 				return ec.fieldContext_Home_deleted(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Home_createdAt(ctx, field)
-			case "area":
-				return ec.fieldContext_Home_area(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Home", field.Name)
 		},
@@ -971,8 +965,6 @@ func (ec *executionContext) fieldContext_Mutation_editArea(ctx context.Context, 
 				return ec.fieldContext_Area_homeId(ctx, field)
 			case "name":
 				return ec.fieldContext_Area_name(ctx, field)
-			case "equipment":
-				return ec.fieldContext_Area_equipment(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Area", field.Name)
 		},
@@ -1014,9 +1006,9 @@ func (ec *executionContext) _Query_getHome(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Home)
+	res := resTmp.([]*model.HomeQuery)
 	fc.Result = res
-	return ec.marshalOHome2ᚕᚖThaiLyᚋgraphᚋmodelᚐHome(ctx, field.Selections, res)
+	return ec.marshalOHomeQuery2ᚕᚖThaiLyᚋgraphᚋmodelᚐHomeQuery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getHome(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1028,21 +1020,21 @@ func (ec *executionContext) fieldContext_Query_getHome(_ context.Context, field 
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Home_id(ctx, field)
+				return ec.fieldContext_HomeQuery_id(ctx, field)
 			case "accountId":
-				return ec.fieldContext_Home_accountId(ctx, field)
+				return ec.fieldContext_HomeQuery_accountId(ctx, field)
 			case "homeName":
-				return ec.fieldContext_Home_homeName(ctx, field)
+				return ec.fieldContext_HomeQuery_homeName(ctx, field)
 			case "location":
-				return ec.fieldContext_Home_location(ctx, field)
+				return ec.fieldContext_HomeQuery_location(ctx, field)
 			case "deleted":
-				return ec.fieldContext_Home_deleted(ctx, field)
+				return ec.fieldContext_HomeQuery_deleted(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Home_createdAt(ctx, field)
+				return ec.fieldContext_HomeQuery_createdAt(ctx, field)
 			case "area":
-				return ec.fieldContext_Home_area(ctx, field)
+				return ec.fieldContext_HomeQuery_area(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Home", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type HomeQuery", field.Name)
 		},
 	}
 	return fc, nil

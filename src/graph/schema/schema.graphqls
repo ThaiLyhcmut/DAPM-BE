@@ -12,6 +12,6 @@ type Mutation {
 }
 
 type Query {
-  getHome: [Home]
+  getHome: [HomeQuery]
   inforAccount: Account
 }

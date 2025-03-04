@@ -120,24 +120,40 @@ message SuccessRP {
   string msg = 2;
 }
 
+message CheckHomeRQ {
+  int32 accountId = 1;
+  int32 id = 2;
+}
+
+message CheckAreaRQ {
+  int32 id = 1;
+}
+
+message checkEquipmentRQ {
+  int32 id = 1;
+}
+
 service EquipmentService {
   // start home
   rpc Home(HomeRQ) returns (ListHomeRP) {}
   rpc CreateHome(CreateHomeRQ) returns (HomeRP) {}
   rpc DeleteHome(DeleteHomeRQ) returns (SuccessRP) {}
   rpc EditHome(EditHomeRQ) returns (HomeRP) {}
+  rpc CheckHome(CheckHomeRQ) returns (HomeRP) {}
   // end Home
   // start area
   rpc Area(AreaRQ) returns (ListAreaRP) {}
   rpc CreateArea(CreateAreaRQ) returns (AreaRP) {}
   rpc DeleteArea(DeleteAreaRQ) returns (SuccessRP) {}
   rpc EditArea(EditAreaRQ) returns (AreaRP) {}
+  rpc CheckArea(CheckAreaRQ) returns (AreaRP) {}
   // end area
   // start equipment
   rpc Equipment(EquipmentRQ) returns (ListEquimentRP) {}
   rpc CreateEquipment(CreateEquipmentRQ) returns (EquipmentRP) {}
   rpc DeleteEquipment(DeleteEquipmentRQ) returns (SuccessRP) {}
   rpc EditEquipment(EditEquipmentRQ) returns (EquipmentRP) {}
+  rpc CheckEquipment(checkEquipmentRQ) returns (EquipmentRP) {}
   // end equipment
   // rpc Actions(ActionRQ) returns (ActionRP) {}
 }

@@ -33,8 +33,8 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Area() AreaResolver
-	Home() HomeResolver
+	AreaQuery() AreaQueryResolver
+	HomeQuery() HomeQueryResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -52,6 +52,12 @@ type ComplexityRoot struct {
 	}
 
 	Area struct {
+		HomeID func(childComplexity int) int
+		ID     func(childComplexity int) int
+		Name   func(childComplexity int) int
+	}
+
+	AreaQuery struct {
 		Equipment func(childComplexity int) int
 		HomeID    func(childComplexity int) int
 		ID        func(childComplexity int) int
@@ -73,6 +79,15 @@ type ComplexityRoot struct {
 	}
 
 	Home struct {
+		AccountID func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		Deleted   func(childComplexity int) int
+		HomeName  func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Location  func(childComplexity int) int
+	}
+
+	HomeQuery struct {
 		AccountID func(childComplexity int) int
 		Area      func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
@@ -160,13 +175,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Token(childComplexity), true
 
-	case "Area.equipment":
-		if e.complexity.Area.Equipment == nil {
-			break
-		}
-
-		return e.complexity.Area.Equipment(childComplexity), true
-
 	case "Area.homeId":
 		if e.complexity.Area.HomeID == nil {
 			break
@@ -187,6 +195,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Area.Name(childComplexity), true
+
+	case "AreaQuery.equipment":
+		if e.complexity.AreaQuery.Equipment == nil {
+			break
+		}
+
+		return e.complexity.AreaQuery.Equipment(childComplexity), true
+
+	case "AreaQuery.homeId":
+		if e.complexity.AreaQuery.HomeID == nil {
+			break
+		}
+
+		return e.complexity.AreaQuery.HomeID(childComplexity), true
+
+	case "AreaQuery.id":
+		if e.complexity.AreaQuery.ID == nil {
+			break
+		}
+
+		return e.complexity.AreaQuery.ID(childComplexity), true
+
+	case "AreaQuery.name":
+		if e.complexity.AreaQuery.Name == nil {
+			break
+		}
+
+		return e.complexity.AreaQuery.Name(childComplexity), true
 
 	case "Equipment.areaId":
 		if e.complexity.Equipment.AreaID == nil {
@@ -272,13 +308,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Home.AccountID(childComplexity), true
 
-	case "Home.area":
-		if e.complexity.Home.Area == nil {
-			break
-		}
-
-		return e.complexity.Home.Area(childComplexity), true
-
 	case "Home.createdAt":
 		if e.complexity.Home.CreatedAt == nil {
 			break
@@ -313,6 +342,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Home.Location(childComplexity), true
+
+	case "HomeQuery.accountId":
+		if e.complexity.HomeQuery.AccountID == nil {
+			break
+		}
+
+		return e.complexity.HomeQuery.AccountID(childComplexity), true
+
+	case "HomeQuery.area":
+		if e.complexity.HomeQuery.Area == nil {
+			break
+		}
+
+		return e.complexity.HomeQuery.Area(childComplexity), true
+
+	case "HomeQuery.createdAt":
+		if e.complexity.HomeQuery.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.HomeQuery.CreatedAt(childComplexity), true
+
+	case "HomeQuery.deleted":
+		if e.complexity.HomeQuery.Deleted == nil {
+			break
+		}
+
+		return e.complexity.HomeQuery.Deleted(childComplexity), true
+
+	case "HomeQuery.homeName":
+		if e.complexity.HomeQuery.HomeName == nil {
+			break
+		}
+
+		return e.complexity.HomeQuery.HomeName(childComplexity), true
+
+	case "HomeQuery.id":
+		if e.complexity.HomeQuery.ID == nil {
+			break
+		}
+
+		return e.complexity.HomeQuery.ID(childComplexity), true
+
+	case "HomeQuery.location":
+		if e.complexity.HomeQuery.Location == nil {
+			break
+		}
+
+		return e.complexity.HomeQuery.Location(childComplexity), true
 
 	case "Mutation.createArea":
 		if e.complexity.Mutation.CreateArea == nil {
@@ -606,10 +684,25 @@ input RegisterAccount {
   location: String
   deleted: Boolean
   createdAt: String
-  area: [Area]!
+}
+
+type HomeQuery {
+  id: Int!
+  accountId: Int
+  homeName: String
+  location: String
+  deleted: Boolean
+  createdAt: String
+  area: [AreaQuery]!
 }
 
 type Area {
+  id: Int
+  homeId: Int
+  name: String
+}
+
+type AreaQuery {
   id: Int
   homeId: Int
   name: String
@@ -629,6 +722,7 @@ type Equipment {
   cycle: Int
   status: String
 }
+
 
 type Response {
   code: String
@@ -654,7 +748,7 @@ input CreateEquiment {
 }
 
 input DeleteHome {
-  id: Int
+  id: Int!
 }
 
 input DeleteArea {
@@ -662,7 +756,7 @@ input DeleteArea {
 }
 
 input DeleteEquipment {
-  id: Int
+  id: Int!
 }
 
 input EditHome {
@@ -693,7 +787,7 @@ input EditArea {
 }
 
 type Query {
-  getHome: [Home]
+  getHome: [HomeQuery]
   inforAccount: Account
 }`, BuiltIn: false},
 }

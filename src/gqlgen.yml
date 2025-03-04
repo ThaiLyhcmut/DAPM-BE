@@ -155,11 +155,11 @@ models:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
-  Home:
+  HomeQuery:
     fields:
       area:
         resolver: true
-  Area:
+  AreaQuery:
     fields:
       equipment:
         resolver: true

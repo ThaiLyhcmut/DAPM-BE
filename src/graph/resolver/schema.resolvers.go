@@ -8,67 +8,66 @@ import (
 	"ThaiLy/graph/generated"
 	"ThaiLy/graph/model"
 	"context"
-	"fmt"
 )
 
 // RegisterAccount is the resolver for the registerAccount field.
 func (r *mutationResolver) RegisterAccount(ctx context.Context, account model.RegisterAccount) (*model.Account, error) {
-	return r.Ctrl.ControllerRegister(account)
+	return r.RegisterAccount(ctx, account)
 }
 
 // LoginAccount is the resolver for the LoginAccount field.
 func (r *mutationResolver) LoginAccount(ctx context.Context, account model.LoginAccount) (*model.Account, error) {
-	return r.Ctrl.ControllerLogin(account)
+	return r.LoginAccount(ctx, account)
 }
 
 // CreateHome is the resolver for the createHome field.
 func (r *mutationResolver) CreateHome(ctx context.Context, home model.CreateHome) (*model.Home, error) {
-	panic(fmt.Errorf("not implemented: CreateHome - createHome"))
+	return r.CreateHome(ctx, home)
 }
 
 // CreateArea is the resolver for the createArea field.
 func (r *mutationResolver) CreateArea(ctx context.Context, area model.CreateArea) (*model.Area, error) {
-	panic(fmt.Errorf("not implemented: CreateArea - createArea"))
+	return r.CreateArea(ctx, area)
 }
 
 // CreateEquiment is the resolver for the createEquiment field.
 func (r *mutationResolver) CreateEquiment(ctx context.Context, equipment model.CreateEquiment) (*model.Equipment, error) {
-	panic(fmt.Errorf("not implemented: CreateEquiment - createEquiment"))
+	return r.CreateEquiment(ctx, equipment)
 }
 
 // DeleteHome is the resolver for the deleteHome field.
 func (r *mutationResolver) DeleteHome(ctx context.Context, home model.DeleteHome) (*model.Response, error) {
-	panic(fmt.Errorf("not implemented: DeleteHome - deleteHome"))
+	return r.DeleteHome(ctx, home)
 }
 
 // DeleteArea is the resolver for the deleteArea field.
 func (r *mutationResolver) DeleteArea(ctx context.Context, area model.DeleteArea) (*model.Response, error) {
-	panic(fmt.Errorf("not implemented: DeleteArea - deleteArea"))
+	return r.DeleteArea(ctx, area)
 }
 
 // DeleteEquipment is the resolver for the deleteEquipment field.
 func (r *mutationResolver) DeleteEquipment(ctx context.Context, equipment model.DeleteEquipment) (*model.Response, error) {
-	panic(fmt.Errorf("not implemented: DeleteEquipment - deleteEquipment"))
+	return r.DeleteEquipment(ctx, equipment)
 }
 
 // EidtHome is the resolver for the eidtHome field.
 func (r *mutationResolver) EidtHome(ctx context.Context, home model.EditHome) (*model.Home, error) {
-	panic(fmt.Errorf("not implemented: EidtHome - eidtHome"))
+	return r.EidtHome(ctx, home)
 }
 
 // EditArea is the resolver for the editArea field.
 func (r *mutationResolver) EditArea(ctx context.Context, area model.EditArea) (*model.Area, error) {
-	panic(fmt.Errorf("not implemented: EditArea - editArea"))
+	return r.EditArea(ctx, area)
 }
 
 // GetHome is the resolver for the getHome field.
-func (r *queryResolver) GetHome(ctx context.Context) ([]*model.Home, error) {
-	return r.Ctrl.GetHome(ctx)
+func (r *queryResolver) GetHome(ctx context.Context) ([]*model.HomeQuery, error) {
+	return r.GetHome(ctx)
 }
 
 // InforAccount is the resolver for the inforAccount field.
 func (r *queryResolver) InforAccount(ctx context.Context) (*model.Account, error) {
-	return r.Ctrl.ControllerInfor(ctx)
+	return r.InforAccount(ctx)
 }
 
 // Mutation returns generated.MutationResolver implementation.
