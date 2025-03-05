@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"ThaiLy/graph/config"
 	"ThaiLy/graph/controller"
 	"ThaiLy/graph/generated"
 	"ThaiLy/graph/helper"
@@ -21,6 +22,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -28,14 +30,12 @@ const defaultPort = "8081"
 
 func main() {
 
-	// Set gin to release mode
-	// gin.SetMode(gin.ReleaseMode)
-	// Load .env file
-	// godotenv.Load()
+	gin.SetMode(gin.ReleaseMode)
 
-	// fmt.Println("MySQL Name: ", os.Getenv("MYSQL_NAME"))
+	// Tải biến môi trường
+	godotenv.Load()
+	config.ConnectMongoDB(os.Getenv("MONGO_URL"))
 
-	// Create Gin router
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
@@ -51,15 +51,15 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-	auth, err := client.NewGRPCAuthClient("localhost:55555")
+	auth, err := client.NewGRPCAuthClient("service-auth:55555")
 	if err != nil {
 		log.Fatalf("client auth error %v", err)
 	}
-	equipment, err := client.NewGRPCEquipmentClient("localhost:55556")
+	equipment, err := client.NewGRPCEquipmentClient("service-equipment:55556")
 	if err != nil {
 		log.Fatalf("client equipment error %v", err)
 	}
-	kafka, err := client.NewGRPCKafkaClient("localhost:55557")
+	kafka, err := client.NewGRPCKafkaClient("service-kafka:55557")
 	if err != nil {
 		log.Fatalf("client equipment error %v", err)
 	}
@@ -97,13 +97,36 @@ func main() {
 			}
 		}
 
-		// Kiểm tra nếu là WebSocket, thì dùng srv.ServeHTTP trực tiếp
 		if strings.Contains(c.GetHeader("Upgrade"), "websocket") {
-			srv.ServeHTTP(c.Writer, c.Request)
+			token := c.GetHeader("Authorization")
+			if token != "" && len(token) > 7 && strings.HasPrefix(token, "Bearer ") {
+				token = token[7:]
+				Claims, err := helper.ParseJWT(token)
+				if Claims != nil && err == nil {
+					userID := Claims.ID
+
+					// Lưu trạng thái user vào MongoDB khi kết nối
+					err := config.SaveUserConnection(userID)
+					if err != nil {
+						c.JSON(500, gin.H{"message": "Lỗi lưu trạng thái kết nối"})
+						return
+					}
+
+					// Khi client mất kết nối, xóa trạng thái
+					go func() {
+						<-c.Request.Context().Done()
+						log.Printf("User %s disconnected", userID)
+						config.RemoveUserConnection(userID)
+					}()
+
+					srv.ServeHTTP(c.Writer, c.Request)
+					return
+				}
+			}
+			c.JSON(401, gin.H{"message": "Unauthorized WebSocket connection"})
 			return
 		}
 
-		// Nếu là HTTP bình thường thì vẫn dùng WrapH
 		gin.WrapH(srv)(c)
 	})
 

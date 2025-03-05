@@ -20,15 +20,15 @@ type DeviceService struct {
 }
 
 func (s *DeviceService) ToggleDevice(ctx context.Context, req *protoKafka.DeviceRequest) (*protoKafka.DeviceResponse, error) {
-	// Gửi sự kiện trạng thái thiết bị vào Kafka
 	topic := "device_status"
 	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{"localhost:9092"},
+		Brokers: []string{"kafka:9092"},
 		Topic:   topic,
 	})
 	defer writer.Close()
 
-	message := fmt.Sprintf("Device %d is now %t", req.Id, req.TurnOn)
+	// Gửi deviceId | turnOn | accountId
+	message := fmt.Sprintf("%d|%t|%d", req.Id, req.TurnOn, req.AccountId)
 	err := writer.WriteMessages(ctx, kafka.Message{
 		Key:   []byte(fmt.Sprintf("%d", req.Id)),
 		Value: []byte(message),
