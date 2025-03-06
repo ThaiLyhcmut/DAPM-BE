@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -11,6 +12,7 @@ import (
 	"ThaiLy/graph/controller"
 	"ThaiLy/graph/generated"
 	"ThaiLy/graph/helper"
+	"ThaiLy/graph/model"
 	"ThaiLy/graph/resolver"
 
 	"ThaiLy/server/client"
@@ -96,7 +98,7 @@ func main() {
 				c.Request = c.Request.WithContext(ctx)
 			}
 		}
-
+	}, func(c *gin.Context) {
 		if strings.Contains(c.GetHeader("Upgrade"), "websocket") {
 			token := c.GetHeader("Authorization")
 			if token != "" && len(token) > 7 && strings.HasPrefix(token, "Bearer ") {
@@ -104,29 +106,46 @@ func main() {
 				Claims, err := helper.ParseJWT(token)
 				if Claims != nil && err == nil {
 					userID := Claims.ID
-
-					// Lưu trạng thái user vào MongoDB khi kết nối
-					err := config.SaveUserConnection(userID)
-					if err != nil {
-						c.JSON(500, gin.H{"message": "Lỗi lưu trạng thái kết nối"})
-						return
+					fmt.Print(0)
+					// Kiểm tra nếu user chưa có kênh -> tạo kênh mới
+					controller.Mu.Lock()
+					if _, exists := controller.DeviceChannels[userID]; !exists {
+						controller.DeviceChannels[userID] = make(chan *model.Device, 1)
+						go controller.HandleDeviceUpdates(userID, controller.DeviceChannels[userID])
+						log.Printf("WebSocket subscription created for user ID: %d", userID)
 					}
-
+					controller.Mu.Unlock()
+					fmt.Print(controller.DeviceChannels)
+					fmt.Print(controller.DeviceChannels[userID])
 					// Khi client mất kết nối, xóa trạng thái
+					fmt.Print(1)
 					go func() {
 						<-c.Request.Context().Done()
-						log.Printf("User %s disconnected", userID)
+						log.Printf("User %d disconnected", userID)
 						config.RemoveUserConnection(userID)
-					}()
 
+						controller.Mu.Lock()
+						if ch, exists := controller.DeviceChannels[userID]; exists {
+							close(ch) // Chỉ đóng nếu chắc chắn channel tồn tại
+							delete(controller.DeviceChannels, userID)
+						}
+						controller.Mu.Unlock()
+					}()
+					log.Println("Serving WebSocket for user:", userID)
 					srv.ServeHTTP(c.Writer, c.Request)
+					log.Println("Serving WebSocket for user:", userID)
 					return
 				}
+				log.Println("Serving WebSocket for user:", -100)
+				c.JSON(401, gin.H{"message": "Unauthorized WebSocket connection"})
+				log.Println("Serving WebSocket for user:", -100)
+				return
 			}
+			log.Println("Serving WebSocket for user:", -200)
 			c.JSON(401, gin.H{"message": "Unauthorized WebSocket connection"})
+			log.Println("Serving WebSocket for user:", -100)
 			return
 		}
-
 		gin.WrapH(srv)(c)
 	})
 

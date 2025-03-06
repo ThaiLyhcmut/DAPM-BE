@@ -72,7 +72,7 @@ func IsUserConnected(userID int32) (bool, error) {
 	collection := MongoClient.Database("websocket").Collection(collectionName)
 
 	// Tìm userId trong MongoDB
-	filter := bson.M{"userId": userID}
+	filter := bson.M{"userID": userID}
 	count, err := collection.CountDocuments(context.TODO(), filter)
 	if err != nil {
 		return false, err

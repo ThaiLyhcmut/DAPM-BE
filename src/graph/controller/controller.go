@@ -1,17 +1,13 @@
 package controller
 
 import (
-	"ThaiLy/graph/model"
 	"ThaiLy/server/client"
-	"sync"
 )
 
 type Controller struct {
-	auth          *client.GRPCAuthClient
-	equipment     *client.GRPCEquipmentClient
-	kafka         *client.GRPCKafkaClient
-	mu            sync.Mutex
-	subscriptions map[int32]chan *model.Device
+	auth      *client.GRPCAuthClient
+	equipment *client.GRPCEquipmentClient
+	kafka     *client.GRPCKafkaClient
 }
 
 // Constructor function
