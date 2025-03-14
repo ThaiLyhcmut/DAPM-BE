@@ -1,0 +1,27 @@
+name: LearnGo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docker:
+    runs-on: actions/runner
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - name: Build and push Docker images
+        run: |
+          services=(server service-auth service-equipment service-kafka)
+          for service in "${services[@]}"; do
+            sudo docker build -t thaily/$service -f docker/$service.Dockerfile .
+            sudo docker push thaily/$service
+          done
