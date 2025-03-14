@@ -22,6 +22,6 @@ jobs:
         run: |
           services=(server service-auth service-equipment service-kafka)
           for service in "${services[@]}"; do
-            sudo docker build -t thaily/$service -f docker/$service.Dockerfile .
+            sudo docker build -t thaily/$service -f src/docker/$service.Dockerfile .
             sudo docker push thaily/$service
           done
