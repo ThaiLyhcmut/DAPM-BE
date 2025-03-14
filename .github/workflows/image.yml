@@ -20,10 +20,10 @@ jobs:
           echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       - name: Build and push Docker images
         run: |
-          
+          cd src
           services=(server service-auth service-equipment service-kafka)
           for service in "${services[@]}"; do
-            cd src
+            
             sudo docker build -t thaily/$service -f docker/$service.Dockerfile .
             sudo docker push thaily/$service
           done
