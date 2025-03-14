@@ -3,11 +3,13 @@ FROM golang:1.24.0 AS builder
 
 WORKDIR /app
 
-# Copy toàn bộ project
-COPY . .
 
-# Cài đặt dependency
+# Copy go.mod và go.sum trước để cache dependencies
+COPY go.mod go.sum ./
 RUN go mod download
+
+# Copy toàn bộ code vào container
+COPY . .
 
 # Build server
 RUN go build -o server ./server/server.go
