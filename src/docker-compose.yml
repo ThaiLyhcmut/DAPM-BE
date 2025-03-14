@@ -40,48 +40,36 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:9092
 
   server:
-    build:
-      context: .
-      dockerfile: docker/server.Dockerfile
-    image: src-server
+    image: thaily/server
     env_file: 
-      - .env
+      - .env.server
     networks:
       - app-network
     ports:
       - "8081:8081"
 
   service-auth:
-    build: 
-      context: .
-      dockerfile: docker/serviceAuth.Dockerfile
-    image: src-service-auth
+    image: thaily/service-auth
     env_file: 
-      - .env
+      - .env.service.auth
     networks:
       - app-network
     ports:
       - "55555:55555"
 
   service-equipment:
-    build: 
-      context: .
-      dockerfile: docker/serviceEquipment.Dockerfile
-    image: src-service-equipment
+    image: thaily/service-equipment
     env_file: 
-      - .env
+      - .env.service.equipment
     networks:
       - app-network
     ports:
       - "55556:55556"
 
   service-kafka:
-    build: 
-      context: .
-      dockerfile: docker/serviceKafka.Dockerfile
-    image: src-service-kafka
+    image: thaily/service-kafka
     env_file: 
-      - .env
+      - .env.service.kafka
     networks:
       - app-network
     ports:
