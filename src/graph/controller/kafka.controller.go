@@ -89,10 +89,7 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 				log.Println("Invalid account ID:", parts[2])
 				continue
 			}
-
 			device := &model.Device{ID: int32(deviceID), TurnOn: turnOn}
-
-			// Gửi dữ liệu đến tất cả channel của user
 			for _, c := range userChannels[int32(accountId)] {
 				c <- device
 			}
