@@ -7,7 +7,7 @@ WORKDIR /app
 RUN ls -lah 
 
 # Copy toàn bộ project
-COPY ../go.mod ../go.sum ../
+COPY . ./
 
 # Cài đặt dependency
 RUN go mod download
