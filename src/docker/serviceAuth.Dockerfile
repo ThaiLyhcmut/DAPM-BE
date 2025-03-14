@@ -4,7 +4,7 @@ FROM golang:1.24.0 AS builder
 WORKDIR /app
 
 # Copy toàn bộ project
-COPY . .
+COPY . ./
 
 # Cài đặt dependency
 RUN go mod download
