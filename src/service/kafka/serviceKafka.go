@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/segmentio/kafka-go"
@@ -20,9 +21,9 @@ type DeviceService struct {
 }
 
 func (s *DeviceService) ToggleDevice(ctx context.Context, req *protoKafka.DeviceRequest) (*protoKafka.DeviceResponse, error) {
-	topic := "device_status"
+	topic := os.Getenv("DEVICE_TOGGLE_TOPIC")
 	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{"kafka:9092"},
+		Brokers: []string{os.Getenv("KAFKA_BROKER")},
 		Topic:   topic,
 	})
 	defer writer.Close()
@@ -45,7 +46,7 @@ func main() {
 	db := database.InitDB()
 	// Ensure proper cleanup
 	ctrl := controller.NewController(db)
-	lis, err := net.Listen("tcp", "0.0.0.0:55557") // tao port
+	lis, err := net.Listen(os.Getenv("NET_WORK"), os.Getenv("ADDRESS")) // tao port
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
 	}

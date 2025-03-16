@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 
 	protoAuth "ThaiLy/proto/auth"
 	"ThaiLy/service/auth/controller"
@@ -64,7 +65,7 @@ func main() {
 	// Ensure proper cleanup
 	ctrl := controller.NewController(db)
 
-	lis, err := net.Listen("tcp", "0.0.0.0:55555") // tao port
+	lis, err := net.Listen(os.Getenv("NET_WORK"), os.Getenv("ADDRESS")) // tao port
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
 	}

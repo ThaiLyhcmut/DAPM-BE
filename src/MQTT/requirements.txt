@@ -1,0 +1,4 @@
+Flask
+paho-mqtt
+confluent_kafka
+python-dotenv

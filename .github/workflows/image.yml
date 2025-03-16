@@ -21,7 +21,7 @@ jobs:
       - name: Build and push Docker images
         run: |
           cd src
-          services=(server service-auth service-equipment service-kafka)
+          services=(mqtt server service-auth service-equipment service-kafka)
           for service in "${services[@]}"; do
             
             sudo docker build -t thaily/$service -f docker/$service.Dockerfile .

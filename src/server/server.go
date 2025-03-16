@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -13,7 +11,6 @@ import (
 	"ThaiLy/graph/generated"
 	"ThaiLy/graph/helper"
 	"ThaiLy/graph/resolver"
-	protoKafka "ThaiLy/proto/kafka"
 
 	"ThaiLy/server/client"
 
@@ -22,69 +19,11 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/segmentio/kafka-go"
 	"github.com/vektah/gqlparser/v2/ast"
 )
-
-func handleMQTTMessage(client mqtt.Client, msg mqtt.Message) {
-	kafkaTopic := "device_status"
-	kafkaWriter := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{"kafka:9092"},
-		Topic:   kafkaTopic,
-	})
-	defer kafkaWriter.Close()
-
-	// Parse nội dung MQTT message
-	var req protoKafka.DeviceRequest
-	err := json.Unmarshal(msg.Payload(), &req)
-	if err != nil {
-		log.Printf("❌ Lỗi parse MQTT message: %v", err)
-		return
-	}
-
-	// Format lại dữ liệu giống ToggleDevice
-	message := fmt.Sprintf("%d|%t|%s", req.Id, req.TurnOn, req.AccountId)
-
-	// Ghi vào Kafka
-	err = kafkaWriter.WriteMessages(context.Background(), kafka.Message{
-		Key:   []byte(fmt.Sprintf("%d", req.Id)),
-		Value: []byte(message),
-	})
-	if err != nil {
-		log.Printf("❌ Lỗi ghi vào Kafka: %v", err)
-	} else {
-		log.Printf("✅ Ghi vào Kafka thành công: %s", message)
-	}
-}
-
-func connectMQTT(broker, clientID, username, password, topic string) {
-	fmt.Println(broker, clientID, username, password, topic)
-	opts := mqtt.NewClientOptions()
-	opts.AddBroker(broker)
-	opts.SetClientID(clientID)
-
-	// Thêm username và password
-	opts.SetUsername(username)
-	opts.SetPassword(password)
-
-	opts.SetDefaultPublishHandler(handleMQTTMessage)
-
-	client := mqtt.NewClient(opts)
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		log.Fatalf("❌ Lỗi kết nối MQTT: %v", token.Error())
-	}
-	log.Println("✅ Kết nối MQTT thành công!")
-
-	// Đăng ký lắng nghe topic MQTT
-	if token := client.Subscribe(topic, 1, nil); token.Wait() && token.Error() != nil {
-		log.Fatalf("❌ Lỗi đăng ký topic MQTT: %v", token.Error())
-	}
-	log.Printf("📩 Đang lắng nghe MQTT topic: %s", topic)
-}
 
 const defaultPort = "8081"
 
@@ -110,7 +49,7 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-	go connectMQTT(os.Getenv("MQTT_BROKER"), "myClient", os.Getenv("MQTT_USER"), os.Getenv("MQTT_PASSWORD"), os.Getenv("MQTT_TOPIC"))
+	go ConnectMQTT(os.Getenv("MQTT_BROKER"), os.Getenv("CLIENT_ID"), os.Getenv("MQTT_USER"), os.Getenv("MQTT_PASSWORD"), os.Getenv("MQTT_TOPIC"))
 	auth, err := client.NewGRPCAuthClient(os.Getenv("SERVICE_AUTH"))
 	if err != nil {
 		log.Fatalf("client auth error %v", err)

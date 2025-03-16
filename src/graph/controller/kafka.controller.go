@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 
@@ -58,9 +59,9 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 		}()
 
 		reader := kafka.NewReader(kafka.ReaderConfig{
-			Brokers: []string{"kafka:9092"},
-			Topic:   "device_status",
-			GroupID: "graphql-consumer",
+			Brokers: []string{os.Getenv("KAFKA_BROKER")},
+			Topic:   os.Getenv("DEVICE_TOGGLE_TOPIC"),
+			GroupID: os.Getenv("GROUP_ID"),
 		})
 
 		for {
