@@ -1,4 +1,17 @@
 services:
+  mqtt-broker:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt-broker
+    restart: always
+    ports:
+      - "1883:1883"  # MQTT protocol
+      - "9001:9001"  # WebSocket (nếu cần)
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - app-network
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -39,10 +52,21 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:9092
 
+  iot:
+    image: thaily/iot
+    env_file: 
+      - .iot.env
+    depends_on:
+      - kafka
+      - mqtt
+    networks:
+      - app-network
+    ports:
+
   server:
     image: thaily/server
     env_file: 
-      - .env.server
+      - .server.env
     networks:
       - app-network
     ports:
@@ -51,7 +75,7 @@ services:
   service-auth:
     image: thaily/service-auth
     env_file: 
-      - .env.service.auth
+      - .service.auth.env
     networks:
       - app-network
     ports:
@@ -60,7 +84,7 @@ services:
   service-equipment:
     image: thaily/service-equipment
     env_file: 
-      - .env.service.equipment
+      - .service.equipment.env
     networks:
       - app-network
     ports:
@@ -69,7 +93,7 @@ services:
   service-kafka:
     image: thaily/service-kafka
     env_file: 
-      - .env.service.kafka
+      - .service.kafka.env
     networks:
       - app-network
     ports:

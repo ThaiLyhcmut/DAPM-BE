@@ -1,1 +1,7 @@
 .env
+mosquitto/
+.server.env
+.service.auth.env
+.service.equipment.env
+.service.kafka.env
+.iot.env
