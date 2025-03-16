@@ -48,20 +48,16 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 	if !ok {
 		return nil, fmt.Errorf("could not retrieve claims from context")
 	}
-	userID, err := helper.ParseASE(Claims.ID)
-	if err != nil {
-		return nil, err
-	}
 
 	// Lưu channel vào danh sách
-	userChannels[userID] = append(userChannels[userID], ch)
+	userChannels[Claims.ID] = append(userChannels[Claims.ID], ch)
 
 	go func() {
 		defer func() {
 			// Xóa channel khi đóng
-			for i, c := range userChannels[userID] {
+			for i, c := range userChannels[Claims.ID] {
 				if c == ch {
-					userChannels[userID] = append(userChannels[userID][:i], userChannels[userID][i+1:]...)
+					userChannels[Claims.ID] = append(userChannels[Claims.ID][:i], userChannels[Claims.ID][i+1:]...)
 					break
 				}
 			}
@@ -81,7 +77,7 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 				return
 			}
 
-			log.Println("Received Kafka event:", string(msg.Value))
+			log.Println("Received Kafka event: %s", string(msg.Value))
 			parts := strings.Split(string(msg.Value), "|")
 			if len(parts) != 3 {
 				log.Println("Invalid message format:", msg.Value)
