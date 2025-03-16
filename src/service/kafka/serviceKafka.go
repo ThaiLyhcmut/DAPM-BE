@@ -75,6 +75,7 @@ func handleMQTTMessage(client mqtt.Client, msg mqtt.Message) {
 }
 
 func connectMQTT(broker, clientID, username, password, topic string) {
+	fmt.Println(broker, clientID, username, password, topic)
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(broker)
 	opts.SetClientID(clientID)
@@ -103,7 +104,7 @@ func main() {
 	db := database.InitDB()
 	// Ensure proper cleanup
 	ctrl := controller.NewController(db)
-	go connectMQTT(os.Getenv("MQTT_BROKER"), "go_mqtt_client", os.Getenv("MQTT_USER"), os.Getenv("MQTT_PASSWORD"), os.Getenv("MQTT_TOPIC"))
+	go connectMQTT(os.Getenv("MQTT_BROKER"), "myClient", os.Getenv("MQTT_USER"), os.Getenv("MQTT_PASSWORD"), os.Getenv("MQTT_TOPIC"))
 	lis, err := net.Listen("tcp", "0.0.0.0:55557") // tao port
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
