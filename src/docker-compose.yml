@@ -52,14 +52,6 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:9092
 
-  iot:
-    image: thaily/iot
-    env_file: 
-      - .iot.env
-    networks:
-      - app-network
-    ports:
-      - "5000:5000"
 
   server:
     image: thaily/server
