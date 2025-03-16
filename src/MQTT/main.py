@@ -4,7 +4,8 @@ from controllers.mqtt_controller import start_mqtt
 from views.mqtt_view import home
 from threading import Thread
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 # Tạo ứng dụng Flask
 app = Flask(__name__)
 
@@ -18,7 +19,8 @@ def start_mqtt_thread():
     username = os.getenv("MQTT_USER")
     password = os.getenv("MQTT_PASSWORD")
     topic = os.getenv("MQTT_TOPIC")
-    start_mqtt(broker, client_id, username, password, topic)
+    port = int(os.getenv("MQTT_PORT"))
+    start_mqtt(broker, port, client_id, username, password, topic)
 
 if __name__ == "__main__":
     mqtt_thread = Thread(target=start_mqtt_thread)
