@@ -11,6 +11,7 @@ import (
 
 // Mã hóa AES-CTR
 func CreateAES(plainText string) (string, error) {
+	fmt.Println(plainText)
 	key := os.Getenv("AES_KEY")
 	if len(key) != 32 { // AES-256 cần 32 byte
 		return "", fmt.Errorf("invalid AES key size")
@@ -31,12 +32,13 @@ func CreateAES(plainText string) (string, error) {
 	ciphertext := make([]byte, len(plainText))
 	stream := cipher.NewCTR(block, iv)
 	stream.XORKeyStream(ciphertext, []byte(plainText))
-
+	fmt.Println(hex.EncodeToString(iv) + hex.EncodeToString(ciphertext))
 	// Kết hợp IV + ciphertext và encode thành hex
 	return hex.EncodeToString(iv) + hex.EncodeToString(ciphertext), nil
 }
 
 func ParseASE(cipherText string) (string, error) {
+	fmt.Println(cipherText)
 	key := os.Getenv("AES_KEY")
 	if len(key) != 32 {
 		return "", fmt.Errorf("invalid AES key size")
