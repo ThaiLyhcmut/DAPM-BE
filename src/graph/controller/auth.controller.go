@@ -13,7 +13,10 @@ func (C *Controller) ControllerRegister(account model.RegisterAccount) (*model.A
 	if err != nil {
 		return nil, err
 	}
-	Id := helper.CreateASE(string(result.Id))
+	Id, err := helper.CreateAES(string(result.Id))
+	if err != nil {
+		return nil, err
+	}
 	token := helper.CreateJWT(Id)
 	resp := &model.Account{
 		ID:       &Id,
@@ -30,7 +33,10 @@ func (C *Controller) ControllerLogin(account model.LoginAccount) (*model.Account
 	if err != nil {
 		return nil, err
 	}
-	ASEID := helper.CreateASE(string(result.Id))
+	ASEID, err := helper.CreateAES(string(result.Id))
+	if err != nil {
+		return nil, err
+	}
 	token := helper.CreateJWT(ASEID)
 	resp := &model.Account{
 		ID:       &ASEID,
@@ -47,7 +53,11 @@ func (C *Controller) ControllerInfor(ctx context.Context) (*model.Account, error
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzation")
 	}
-	id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}

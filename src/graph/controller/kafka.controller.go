@@ -20,7 +20,11 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, err
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
@@ -46,8 +50,11 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 	if !ok {
 		return nil, fmt.Errorf("could not retrieve claims from context")
 	}
-
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, err
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}

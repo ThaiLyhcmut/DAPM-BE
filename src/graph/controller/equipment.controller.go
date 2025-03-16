@@ -13,7 +13,11 @@ func (C *Controller) GetHome(ctx context.Context) ([]*model.HomeQuery, error) {
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
@@ -40,7 +44,11 @@ func (C *Controller) CreateHome(ctx context.Context, home model.CreateHome) (*mo
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
@@ -65,7 +73,11 @@ func (C *Controller) DeleteHome(ctx context.Context, home model.DeleteHome) (*mo
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, err
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
@@ -109,7 +121,11 @@ func (C *Controller) CreateArea(ctx context.Context, area model.CreateArea) (*mo
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, err
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
@@ -139,7 +155,11 @@ func (C *Controller) DeleteArea(ctx context.Context, area model.DeleteArea) (*mo
 	if err != nil || exitsArea == nil {
 		return nil, fmt.Errorf("error check Area")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, err
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
@@ -188,7 +208,11 @@ func (C *Controller) CreateEquiment(ctx context.Context, equipment model.CreateE
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, err
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
@@ -233,7 +257,11 @@ func (C *Controller) DeleteEquipment(ctx context.Context, equipment model.Delete
 	if err != nil || exitsEquipment == nil {
 		return nil, fmt.Errorf("error check Area")
 	}
-	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	IDP, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, err
+	}
+	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
