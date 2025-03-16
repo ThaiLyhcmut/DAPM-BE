@@ -1,8 +1,8 @@
 .env
-mosquitto/
 .server.env
+.mqtt.env
 .service.auth.env
 .service.equipment.env
 .service.kafka.env
-.mqtt.env
-MQTT/myenv/
+MQTT/myenv
+mosquitto/

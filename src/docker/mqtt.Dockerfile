@@ -5,7 +5,7 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Sao chép các file cần thiết vào Docker container
-COPY requirements.txt .
+COPY ./MQTT/requirements.txt .
 
 # Cài đặt các thư viện cần thiết
 RUN pip install --no-cache-dir -r requirements.txt
