@@ -4,5 +4,6 @@
 .service.auth.env
 .service.equipment.env
 .service.kafka.env
-MQTT/myenv
+
+MQTT/myenv/
 mosquitto/
