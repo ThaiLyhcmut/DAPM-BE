@@ -33,7 +33,8 @@ func (C *Controller) ControllerLogin(account model.LoginAccount) (*model.Account
 	if err != nil {
 		return nil, err
 	}
-	ASEID, err := helper.CreateAES(string(result.Id))
+	str := fmt.Sprintf("%d", result.Id)
+	ASEID, err := helper.CreateAES(str)
 	if err != nil {
 		return nil, err
 	}
