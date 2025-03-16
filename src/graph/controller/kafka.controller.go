@@ -77,7 +77,7 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 				return
 			}
 
-			log.Println("Received Kafka event: %s", string(msg.Value))
+			log.Println("Received Kafka event: ", string(msg.Value))
 			parts := strings.Split(string(msg.Value), "|")
 			if len(parts) != 3 {
 				log.Println("Invalid message format:", msg.Value)
