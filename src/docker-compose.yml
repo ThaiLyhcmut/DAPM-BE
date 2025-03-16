@@ -56,9 +56,6 @@ services:
     image: thaily/iot
     env_file: 
       - .iot.env
-    depends_on:
-      - kafka
-      - mqtt-broker
     networks:
       - app-network
     ports:

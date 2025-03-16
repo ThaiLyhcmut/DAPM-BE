@@ -4,15 +4,18 @@ import paho.mqtt.client as mqtt
 from confluent_kafka import Producer
 
 # Lấy thông tin từ biến môi trường
-MQTT_BROKER = os.getenv("MQTT_BROKER")
-MQTT_PORT = int(os.getenv("MQTT_PORT"))
-MQTT_USERNAME = os.getenv("MQTT_USERNAME")
-MQTT_PASSWORD = os.getenv("MQTT_PASSWORD")
-MQTT_TOPIC = os.getenv("MQTT_TOPIC")
+MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")
+MQTT_PORT = int(os.getenv("MQTT_PORT", "1883"))
+MQTT_USERNAME = os.getenv("MQTT_USERNAME", "thaily")
+MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "Th@i2004")
+MQTT_TOPIC = os.getenv("MQTT_TOPIC", "test/topic")
 
-KAFKA_BROKER = os.getenv("KAFKA_BROKER")
-KAFKA_TOPIC = os.getenv("KAFKA_TOPIC")
+print(MQTT_BROKER, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, MQTT_TOPIC)
 
+KAFKA_BROKER = os.getenv("KAFKA_BROKER", "kafka:9092")
+KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "device_status")
+
+print(KAFKA_BROKER, KAFKA_TOPIC)
 # Khởi tạo Kafka Producer
 producer = Producer({"bootstrap.servers": KAFKA_BROKER})
 
