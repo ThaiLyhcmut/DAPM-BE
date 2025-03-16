@@ -61,6 +61,6 @@ func ParseASE(cipherText string) (string, error) {
 	plainText := make([]byte, len(ciphertext))
 	stream := cipher.NewCTR(block, iv)
 	stream.XORKeyStream(plainText, ciphertext)
-
+	fmt.Print(string(plainText))
 	return string(plainText), nil
 }
