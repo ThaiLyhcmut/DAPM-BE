@@ -58,10 +58,11 @@ services:
       - .iot.env
     depends_on:
       - kafka
-      - mqtt
+      - mqtt-broker
     networks:
       - app-network
     ports:
+      - "5000:5000"
 
   server:
     image: thaily/server

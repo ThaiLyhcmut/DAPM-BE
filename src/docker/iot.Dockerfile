@@ -10,7 +10,5 @@ COPY . .
 # Cài đặt các thư viện cần thiết
 RUN pip install --no-cache-dir paho-mqtt confluent-kafka
 
-RUN python build -o iot ./IoT/main.py
-
 # Chạy script Python
-CMD ["./iot"]
+CMD ["python", "IoT/main.py"]
