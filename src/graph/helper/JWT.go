@@ -10,7 +10,7 @@ import (
 )
 
 type Claims struct {
-	ID                   int32
+	ID                   string
 	jwt.RegisteredClaims // Thêm các trường chuẩn như exp, iat
 }
 
@@ -18,7 +18,7 @@ type ContextKey string
 
 const Auth ContextKey = "xxxyyyzzzkkk"
 
-func CreateJWT(id int32) string {
+func CreateJWT(id string) string {
 	claims := Claims{
 		ID: id, // Sử dụng email ở đây
 		RegisteredClaims: jwt.RegisteredClaims{

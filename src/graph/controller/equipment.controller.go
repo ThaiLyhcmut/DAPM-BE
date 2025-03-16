@@ -5,15 +5,19 @@ import (
 	"ThaiLy/graph/model"
 	"context"
 	"fmt"
+	"strconv"
 )
 
 func (C *Controller) GetHome(ctx context.Context) ([]*model.HomeQuery, error) {
 	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
-	fmt.Print(Claims.ID, ok)
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	homes, err := C.equipment.GetHome(Claims.ID)
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	homes, err := C.equipment.GetHome(int32(Id))
 	if err != nil {
 		return nil, fmt.Errorf("error get home")
 	}
@@ -36,13 +40,18 @@ func (C *Controller) CreateHome(ctx context.Context, home model.CreateHome) (*mo
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	resp, err := C.equipment.CreateHome(Claims.ID, home.HomeName, home.Location)
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id32 := int32(Id)
+	resp, err := C.equipment.CreateHome(Id32, home.HomeName, home.Location)
 	if err != nil {
 		return nil, fmt.Errorf("error create home")
 	}
 	return &model.Home{
 		ID:        resp.Id,
-		AccountID: &Claims.ID,
+		AccountID: &Id32,
 		HomeName:  &resp.HomeName,
 		Location:  &resp.Location,
 		Deleted:   &resp.Deleted,
@@ -56,7 +65,12 @@ func (C *Controller) DeleteHome(ctx context.Context, home model.DeleteHome) (*mo
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	exitsHome, err := C.equipment.CheckHome(Claims.ID, home.ID)
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id32 := int32(Id)
+	exitsHome, err := C.equipment.CheckHome(Id32, home.ID)
 	if err != nil || exitsHome == nil {
 		return nil, fmt.Errorf("error check home")
 	}
@@ -95,7 +109,12 @@ func (C *Controller) CreateArea(ctx context.Context, area model.CreateArea) (*mo
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	exitsHome, err := C.equipment.CheckHome(Claims.ID, area.HomeID)
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id32 := int32(Id)
+	exitsHome, err := C.equipment.CheckHome(Id32, area.HomeID)
 	if err != nil || exitsHome == nil {
 		return nil, fmt.Errorf("not exits home")
 	}
@@ -120,7 +139,12 @@ func (C *Controller) DeleteArea(ctx context.Context, area model.DeleteArea) (*mo
 	if err != nil || exitsArea == nil {
 		return nil, fmt.Errorf("error check Area")
 	}
-	exitsHome, err := C.equipment.CheckHome(Claims.ID, exitsArea.HomeId)
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id32 := int32(Id)
+	exitsHome, err := C.equipment.CheckHome(Id32, exitsArea.HomeId)
 	if err != nil || exitsHome == nil {
 		return nil, fmt.Errorf("error check home")
 	}
@@ -164,7 +188,12 @@ func (C *Controller) CreateEquiment(ctx context.Context, equipment model.CreateE
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	exitsHome, err := C.equipment.CheckHome(Claims.ID, equipment.HomeID)
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id32 := int32(Id)
+	exitsHome, err := C.equipment.CheckHome(Id32, equipment.HomeID)
 	if exitsHome == nil || err != nil {
 		return nil, fmt.Errorf("not exits home")
 	}
@@ -204,7 +233,12 @@ func (C *Controller) DeleteEquipment(ctx context.Context, equipment model.Delete
 	if err != nil || exitsEquipment == nil {
 		return nil, fmt.Errorf("error check Area")
 	}
-	exitsHome, err := C.equipment.CheckHome(Claims.ID, exitsEquipment.HomeId)
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id32 := int32(Id)
+	exitsHome, err := C.equipment.CheckHome(Id32, exitsEquipment.HomeId)
 	if err != nil || exitsHome == nil {
 		return nil, fmt.Errorf("error check home")
 	}

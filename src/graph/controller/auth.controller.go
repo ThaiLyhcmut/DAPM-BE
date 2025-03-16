@@ -5,6 +5,7 @@ import (
 	"ThaiLy/graph/model"
 	"context"
 	"fmt"
+	"strconv"
 )
 
 func (C *Controller) ControllerRegister(account model.RegisterAccount) (*model.Account, error) {
@@ -12,9 +13,10 @@ func (C *Controller) ControllerRegister(account model.RegisterAccount) (*model.A
 	if err != nil {
 		return nil, err
 	}
-	token := helper.CreateJWT(result.Id)
+	Id := helper.CreateASE(string(result.Id))
+	token := helper.CreateJWT(Id)
 	resp := &model.Account{
-		ID:       &result.Id,
+		ID:       &Id,
 		FullName: &result.FullName,
 		Email:    &result.Email,
 		Phone:    &result.Phone,
@@ -28,9 +30,10 @@ func (C *Controller) ControllerLogin(account model.LoginAccount) (*model.Account
 	if err != nil {
 		return nil, err
 	}
-	token := helper.CreateJWT(result.Id)
+	ASEID := helper.CreateASE(string(result.Id))
+	token := helper.CreateJWT(ASEID)
 	resp := &model.Account{
-		ID:       &result.Id,
+		ID:       &ASEID,
 		FullName: &result.FullName,
 		Email:    &result.Email,
 		Phone:    &result.Phone,
@@ -44,8 +47,11 @@ func (C *Controller) ControllerInfor(ctx context.Context) (*model.Account, error
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzation")
 	}
-	id := int32(Claims.ID)
-	result, err := C.auth.Infor(id)
+	id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	result, err := C.auth.Infor(int32(id))
 	if err != nil {
 		return nil, err
 	}

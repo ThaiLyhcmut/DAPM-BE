@@ -2,18 +2,18 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
 
-	"ThaiLy/graph/config"
 	"ThaiLy/graph/controller"
 	"ThaiLy/graph/generated"
 	"ThaiLy/graph/helper"
-	"ThaiLy/graph/model"
 	"ThaiLy/graph/resolver"
+	protoKafka "ThaiLy/proto/kafka"
 
 	"ThaiLy/server/client"
 
@@ -22,11 +22,69 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/segmentio/kafka-go"
 	"github.com/vektah/gqlparser/v2/ast"
 )
+
+func handleMQTTMessage(client mqtt.Client, msg mqtt.Message) {
+	kafkaTopic := "device_status"
+	kafkaWriter := kafka.NewWriter(kafka.WriterConfig{
+		Brokers: []string{"kafka:9092"},
+		Topic:   kafkaTopic,
+	})
+	defer kafkaWriter.Close()
+
+	// Parse nội dung MQTT message
+	var req protoKafka.DeviceRequest
+	err := json.Unmarshal(msg.Payload(), &req)
+	if err != nil {
+		log.Printf("❌ Lỗi parse MQTT message: %v", err)
+		return
+	}
+
+	// Format lại dữ liệu giống ToggleDevice
+	message := fmt.Sprintf("%d|%t|%d", req.Id, req.TurnOn, req.AccountId)
+
+	// Ghi vào Kafka
+	err = kafkaWriter.WriteMessages(context.Background(), kafka.Message{
+		Key:   []byte(fmt.Sprintf("%d", req.Id)),
+		Value: []byte(message),
+	})
+	if err != nil {
+		log.Printf("❌ Lỗi ghi vào Kafka: %v", err)
+	} else {
+		log.Printf("✅ Ghi vào Kafka thành công: %s", message)
+	}
+}
+
+func connectMQTT(broker, clientID, username, password, topic string) {
+	fmt.Println(broker, clientID, username, password, topic)
+	opts := mqtt.NewClientOptions()
+	opts.AddBroker(broker)
+	opts.SetClientID(clientID)
+
+	// Thêm username và password
+	opts.SetUsername(username)
+	opts.SetPassword(password)
+
+	opts.SetDefaultPublishHandler(handleMQTTMessage)
+
+	client := mqtt.NewClient(opts)
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		log.Fatalf("❌ Lỗi kết nối MQTT: %v", token.Error())
+	}
+	log.Println("✅ Kết nối MQTT thành công!")
+
+	// Đăng ký lắng nghe topic MQTT
+	if token := client.Subscribe(topic, 1, nil); token.Wait() && token.Error() != nil {
+		log.Fatalf("❌ Lỗi đăng ký topic MQTT: %v", token.Error())
+	}
+	log.Printf("📩 Đang lắng nghe MQTT topic: %s", topic)
+}
 
 const defaultPort = "8081"
 
@@ -36,7 +94,6 @@ func main() {
 
 	// Tải biến môi trường
 	godotenv.Load()
-	config.ConnectMongoDB(os.Getenv("MONGO_URL"))
 
 	r := gin.Default()
 
@@ -53,15 +110,16 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-	auth, err := client.NewGRPCAuthClient("service-auth:55555")
+	go connectMQTT(os.Getenv("MQTT_BROKER"), "myClient", os.Getenv("MQTT_USER"), os.Getenv("MQTT_PASSWORD"), os.Getenv("MQTT_TOPIC"))
+	auth, err := client.NewGRPCAuthClient(os.Getenv("SERVICE_AUTH"))
 	if err != nil {
 		log.Fatalf("client auth error %v", err)
 	}
-	equipment, err := client.NewGRPCEquipmentClient("service-equipment:55556")
+	equipment, err := client.NewGRPCEquipmentClient(os.Getenv("SERVICE_EQUIPMENT"))
 	if err != nil {
 		log.Fatalf("client equipment error %v", err)
 	}
-	kafka, err := client.NewGRPCKafkaClient("service-kafka:55557")
+	kafka, err := client.NewGRPCKafkaClient(os.Getenv("SERVICE_KAFKA"))
 	if err != nil {
 		log.Fatalf("client equipment error %v", err)
 	}
@@ -99,53 +157,7 @@ func main() {
 			}
 		}
 	}, func(c *gin.Context) {
-		if strings.Contains(c.GetHeader("Upgrade"), "websocket") {
-			token := c.GetHeader("Authorization")
-			if token != "" && len(token) > 7 && strings.HasPrefix(token, "Bearer ") {
-				token = token[7:]
-				Claims, err := helper.ParseJWT(token)
-				if Claims != nil && err == nil {
-					userID := Claims.ID
-					fmt.Print(0)
-					// Kiểm tra nếu user chưa có kênh -> tạo kênh mới
-					controller.Mu.Lock()
-					if _, exists := controller.DeviceChannels[userID]; !exists {
-						controller.DeviceChannels[userID] = make(chan *model.Device, 1)
-						go controller.HandleDeviceUpdates(userID, controller.DeviceChannels[userID])
-						log.Printf("WebSocket subscription created for user ID: %d", userID)
-					}
-					controller.Mu.Unlock()
-					fmt.Print(controller.DeviceChannels)
-					fmt.Print(controller.DeviceChannels[userID])
-					// Khi client mất kết nối, xóa trạng thái
-					fmt.Print(1)
-					go func() {
-						<-c.Request.Context().Done()
-						log.Printf("User %d disconnected", userID)
-						config.RemoveUserConnection(userID)
-
-						controller.Mu.Lock()
-						if ch, exists := controller.DeviceChannels[userID]; exists {
-							close(ch) // Chỉ đóng nếu chắc chắn channel tồn tại
-							delete(controller.DeviceChannels, userID)
-						}
-						controller.Mu.Unlock()
-					}()
-					log.Println("Serving WebSocket for user:", userID)
-					srv.ServeHTTP(c.Writer, c.Request)
-					log.Println("Serving WebSocket for user:", userID)
-					return
-				}
-				log.Println("Serving WebSocket for user:", -100)
-				c.JSON(401, gin.H{"message": "Unauthorized WebSocket connection"})
-				log.Println("Serving WebSocket for user:", -100)
-				return
-			}
-			log.Println("Serving WebSocket for user:", -200)
-			c.JSON(401, gin.H{"message": "Unauthorized WebSocket connection"})
-			log.Println("Serving WebSocket for user:", -100)
-			return
-		}
+		strings.Contains(c.GetHeader("Upgrade"), "websocket")
 		gin.WrapH(srv)(c)
 	})
 

@@ -718,7 +718,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "../schema/auth.graphqls", Input: `type Account {
-  id: Int
+  id: String
   fullName: String
   email: String
   phone: String

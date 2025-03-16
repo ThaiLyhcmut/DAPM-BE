@@ -10,7 +10,6 @@ import (
 	"log"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -21,10 +20,15 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	Id32 := int32(Id)
 	in := &protoKafka.DeviceRequest{
 		Id:        id,
 		TurnOn:    turnOn,
-		AccountId: Claims.ID,
+		AccountId: Id32,
 	}
 	res, err := C.kafka.DeviceService(ctx, in)
 	if err != nil {
@@ -33,8 +37,6 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	return &res.Message, nil
 }
 
-var DeviceChannels = make(map[int32]chan *model.Device)
-var Mu sync.Mutex
 var userChannels = make(map[int32][]chan *model.Device)
 
 func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Device, error) {
@@ -45,7 +47,11 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 		return nil, fmt.Errorf("could not retrieve claims from context")
 	}
 
-	userID := Claims.ID
+	Id, err := strconv.Atoi(helper.ParseASE(Claims.ID))
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+	userID := int32(Id)
 
 	// Lưu channel vào danh sách
 	userChannels[userID] = append(userChannels[userID], ch)

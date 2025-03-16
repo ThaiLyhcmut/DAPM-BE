@@ -1,5 +1,5 @@
 type Account {
-  id: Int
+  id: String
   fullName: String
   email: String
   phone: String
