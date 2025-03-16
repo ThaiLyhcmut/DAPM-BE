@@ -1,7 +1,7 @@
 import logging
 from flask import Flask
 from controllers.mqtt_controller import start_mqtt
-from views.home_view import home
+from views.mqtt_view import home
 from threading import Thread
 import os
 

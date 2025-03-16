@@ -4,4 +4,4 @@ mosquitto/
 .service.auth.env
 .service.equipment.env
 .service.kafka.env
-.iot.env
+.mqtt.env

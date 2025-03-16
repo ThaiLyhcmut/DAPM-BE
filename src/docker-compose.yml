@@ -62,6 +62,14 @@ services:
       - app-network
     ports:
       - "8081:8081"
+  server-mqtt:
+    image: thaily/mqtt
+    env_file:
+      - .mqtt.env
+    networks:
+      - app-network
+    ports:
+      - "5000:5000"
 
   service-auth:
     image: thaily/service-auth
