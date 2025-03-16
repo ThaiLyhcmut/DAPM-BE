@@ -39,7 +39,7 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	return &res.Message, nil
 }
 
-var userChannels = make(map[int32][]chan *model.Device)
+var userChannels = make(map[string][]chan *model.Device)
 
 func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Device, error) {
 	ch := make(chan *model.Device)
@@ -48,15 +48,10 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 	if !ok {
 		return nil, fmt.Errorf("could not retrieve claims from context")
 	}
-	IDP, err := helper.ParseASE(Claims.ID)
+	userID, err := helper.ParseASE(Claims.ID)
 	if err != nil {
 		return nil, err
 	}
-	Id, err := strconv.Atoi(IDP)
-	if err != nil {
-		return nil, fmt.Errorf("error parse id")
-	}
-	userID := int32(Id)
 
 	// Lưu channel vào danh sách
 	userChannels[userID] = append(userChannels[userID], ch)
@@ -95,13 +90,9 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 
 			deviceID, err := strconv.Atoi(parts[0])
 			turnOn := parts[1] == "true"
-			accountId, err := strconv.Atoi(parts[2])
-			if err != nil {
-				log.Println("Invalid account ID:", parts[2])
-				continue
-			}
+			accountId := parts[2]
 			device := &model.Device{ID: int32(deviceID), TurnOn: turnOn}
-			for _, c := range userChannels[int32(accountId)] {
+			for _, c := range userChannels[accountId] {
 				c <- device
 			}
 		}
