@@ -20,17 +20,10 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
-	IDP, err := helper.ParseASE(Claims.ID)
-	if err != nil {
-		return nil, err
-	}
-	if err != nil {
-		return nil, fmt.Errorf("error parse id")
-	}
 	in := &protoKafka.DeviceRequest{
 		Id:        id,
 		TurnOn:    turnOn,
-		AccountId: IDP,
+		AccountId: Claims.ID,
 	}
 	res, err := C.kafka.DeviceService(ctx, in)
 	if err != nil {

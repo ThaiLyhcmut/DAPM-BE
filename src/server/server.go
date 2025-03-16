@@ -47,7 +47,7 @@ func handleMQTTMessage(client mqtt.Client, msg mqtt.Message) {
 	}
 
 	// Format lại dữ liệu giống ToggleDevice
-	message := fmt.Sprintf("%d|%t|%d", req.Id, req.TurnOn, req.AccountId)
+	message := fmt.Sprintf("%d|%t|%s", req.Id, req.TurnOn, req.AccountId)
 
 	// Ghi vào Kafka
 	err = kafkaWriter.WriteMessages(context.Background(), kafka.Message{
