@@ -24,15 +24,13 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	if err != nil {
 		return nil, err
 	}
-	Id, err := strconv.Atoi(IDP)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
-	Id32 := int32(Id)
 	in := &protoKafka.DeviceRequest{
 		Id:        id,
 		TurnOn:    turnOn,
-		AccountId: Id32,
+		AccountId: IDP,
 	}
 	res, err := C.kafka.DeviceService(ctx, in)
 	if err != nil {
