@@ -19,3 +19,5 @@ service-equipment:
 	go run service/equipment/serviceEquipment.go
 service-kafka:
 	go run service/kafka/serviceKafka.go
+server-local:
+	python3 MQTT/main.py

@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 // Mã hóa AES-CTR
@@ -37,22 +38,22 @@ func CreateAES(plainText string) (string, error) {
 	return hex.EncodeToString(iv) + hex.EncodeToString(ciphertext), nil
 }
 
-func ParseASE(cipherText string) (string, error) {
+func ParseASE(cipherText string) (int32, error) {
 	fmt.Println(cipherText)
 	key := os.Getenv("AES_KEY")
 	if len(key) != 32 {
-		return "", fmt.Errorf("invalid AES key size")
+		return 0, fmt.Errorf("invalid AES key size")
 	}
 
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	// Giải mã hex
 	rawData, err := hex.DecodeString(cipherText)
 	if err != nil || len(rawData) < aes.BlockSize {
-		return "", fmt.Errorf("invalid ciphertext")
+		return 0, fmt.Errorf("invalid ciphertext")
 	}
 
 	// Tách IV và dữ liệu mã hóa
@@ -63,6 +64,12 @@ func ParseASE(cipherText string) (string, error) {
 	plainText := make([]byte, len(ciphertext))
 	stream := cipher.NewCTR(block, iv)
 	stream.XORKeyStream(plainText, ciphertext)
-	fmt.Print(string(plainText))
-	return string(plainText), nil
+
+	// Chuyển chuỗi sang int32
+	parsedValue, err := strconv.ParseInt(string(plainText), 10, 32)
+	if err != nil {
+		return 0, fmt.Errorf("failed to parse decrypted value as int32: %v", err)
+	}
+
+	return int32(parsedValue), nil
 }

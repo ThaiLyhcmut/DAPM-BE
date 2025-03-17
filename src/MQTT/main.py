@@ -1,10 +1,12 @@
 import logging
 from flask import Flask
-from controllers.mqtt_controller import start_mqtt
+from config.config import MQTTConfig
 from views.mqtt_view import home
+# from controllers.mqtt_controller import start_device
 from threading import Thread
 import os
 from dotenv import load_dotenv
+
 load_dotenv(".mqtt.env")
 # Tạo ứng dụng Flask
 app = Flask(__name__)
@@ -14,13 +16,9 @@ app.add_url_rule('/', 'home', home)
 
 # Khởi động MQTT trong một thread riêng
 def start_mqtt_thread():
-    broker = os.getenv("MQTT_BROKER")
-    client_id = os.getenv("CLIENT_ID")
-    username = os.getenv("MQTT_USER")
-    password = os.getenv("MQTT_PASSWORD")
-    topic = os.getenv("MQTT_TOPIC")
-    port = int(os.getenv("MQTT_PORT"))
-    start_mqtt(broker, port, client_id, username, password, topic)
+  mqtt_config = MQTTConfig()
+  mqtt_config.connectMQTT()
+  # start_device()
 
 if __name__ == "__main__":
     mqtt_thread = Thread(target=start_mqtt_thread)

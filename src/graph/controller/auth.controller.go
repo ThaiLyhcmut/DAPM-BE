@@ -5,7 +5,6 @@ import (
 	"ThaiLy/graph/model"
 	"context"
 	"fmt"
-	"strconv"
 )
 
 func (C *Controller) ControllerRegister(account model.RegisterAccount) (*model.Account, error) {
@@ -54,15 +53,11 @@ func (C *Controller) ControllerInfor(ctx context.Context) (*model.Account, error
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzation")
 	}
-	IDP, err := helper.ParseASE(Claims.ID)
+	Id, err := helper.ParseASE(Claims.ID)
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
 	}
-	id, err := strconv.Atoi(IDP)
-	if err != nil {
-		return nil, fmt.Errorf("error parse id")
-	}
-	result, err := C.auth.Infor(int32(id))
+	result, err := C.auth.Infor(Id)
 	if err != nil {
 		return nil, err
 	}

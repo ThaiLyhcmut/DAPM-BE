@@ -10,7 +10,7 @@ service DeviceService {
 message DeviceRequest {
   int32 id = 1;
   bool turnOn = 2; // true: bật, false: tắt
-  string accountId = 3;
+  int32 accountId = 3;
 }
 
 message DeviceResponse {

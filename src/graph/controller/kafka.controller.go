@@ -21,10 +21,15 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
+	Id, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
+
 	in := &protoKafka.DeviceRequest{
 		Id:        id,
 		TurnOn:    turnOn,
-		AccountId: Claims.ID,
+		AccountId: Id,
 	}
 	res, err := C.kafka.DeviceService(ctx, in)
 	if err != nil {
@@ -33,7 +38,7 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 	return &res.Message, nil
 }
 
-var userChannels = make(map[string][]chan *model.Device)
+var userChannels = make(map[int32][]chan *model.Device)
 
 func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Device, error) {
 	ch := make(chan *model.Device)
@@ -42,16 +47,19 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 	if !ok {
 		return nil, fmt.Errorf("could not retrieve claims from context")
 	}
-
+	Id, err := helper.ParseASE(Claims.ID)
+	if err != nil {
+		return nil, fmt.Errorf("error parse id")
+	}
 	// Lưu channel vào danh sách
-	userChannels[Claims.ID] = append(userChannels[Claims.ID], ch)
+	userChannels[Id] = append(userChannels[Id], ch)
 
 	go func() {
 		defer func() {
 			// Xóa channel khi đóng
-			for i, c := range userChannels[Claims.ID] {
+			for i, c := range userChannels[Id] {
 				if c == ch {
-					userChannels[Claims.ID] = append(userChannels[Claims.ID][:i], userChannels[Claims.ID][i+1:]...)
+					userChannels[Id] = append(userChannels[Id][:i], userChannels[Id][i+1:]...)
 					break
 				}
 			}
@@ -80,9 +88,12 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 
 			deviceID, err := strconv.Atoi(parts[0])
 			turnOn := parts[1] == "true"
-			accountId := parts[2]
+			accountId, err := strconv.ParseInt(string(parts[2]), 10, 32)
+			if err != nil {
+				return
+			}
 			device := &model.Device{ID: int32(deviceID), TurnOn: turnOn}
-			for _, c := range userChannels[accountId] {
+			for _, c := range userChannels[int32(accountId)] {
 				c <- device
 			}
 		}

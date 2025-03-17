@@ -29,7 +29,7 @@ func (s *DeviceService) ToggleDevice(ctx context.Context, req *protoKafka.Device
 	defer writer.Close()
 
 	// Gửi deviceId | turnOn | accountId
-	message := fmt.Sprintf("%d|%t|%s", req.Id, req.TurnOn, req.AccountId)
+	message := fmt.Sprintf("%d|%t|%d", req.Id, req.TurnOn, req.AccountId)
 	err := writer.WriteMessages(ctx, kafka.Message{
 		Key:   []byte(fmt.Sprintf("%d", req.Id)),
 		Value: []byte(message),
