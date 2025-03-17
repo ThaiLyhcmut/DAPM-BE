@@ -5,7 +5,7 @@ from views.mqtt_view import home
 from threading import Thread
 import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(".mqtt.env")
 # Tạo ứng dụng Flask
 app = Flask(__name__)
 
