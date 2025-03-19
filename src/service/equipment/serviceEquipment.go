@@ -78,7 +78,7 @@ func (S *service) CheckEquipment(ctx context.Context, in *protoEquipment.CheckEq
 }
 
 func main() {
-	godotenv.Load()
+	godotenv.Load(".service.equipment.env")
 	db := database.InitDB()
 	// Ensure proper cleanup
 	ctrl := controller.NewController(db)

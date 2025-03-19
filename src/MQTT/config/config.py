@@ -25,8 +25,12 @@ class MQTTConfig:
       logging.error(f"❌ Lỗi kết nối MQTT: {e}")
       print("connect-error")
       return
+    print(1)
     client.subscribe(self.topic_device)
     client.subscribe(self.topic_audio)
     mqtt_controller = MQTTController(client)
+    print(2)
+    print(client, mqtt_controller, self.topic_device, self.topic_audio) 
     client.on_message = mqtt_controller.controller 
+    print(3)
     client.loop_start()
