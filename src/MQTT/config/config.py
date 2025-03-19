@@ -23,6 +23,7 @@ class MQTTConfig:
       logging.info("✅ Kết nối MQTT thành công!")
     except Exception as e:
       logging.error(f"❌ Lỗi kết nối MQTT: {e}")
+      print("connect-error")
       return
     client.subscribe(self.topic_device)
     client.subscribe(self.topic_audio)

@@ -16,9 +16,6 @@ type Database struct {
 
 func InitDB() *Database {
 	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Error loading .env file")
-	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		os.Getenv("MYSQL_USERNAME"),
