@@ -1,12 +1,44 @@
-root = "."  # Thư mục gốc của dự án
-tmp_dir = "tmp"  # Thư mục tạm thời
+root = "."
+tmp_dir = "tmp"
 
 [build]
-  bin = "tmp/server.exe"  # File biên dịch đầu ra
-  cmd = "go build -o tmp/server.exe ./server"  # Biên dịch thư mục server
-  include_ext = ["go", "yml"]  # Theo dõi file .go và .yml
-  exclude_dir = ["tmp"]  # Bỏ qua thư mục tmp
-  watch_dir = ["server", "graph"]  # Chỉ theo dõi thư mục server và graph
+  bin = "./tmp/run_all.sh"
+  cmd = """
+    rm -rf ./tmp/* &&
+    go build -o ./tmp/server ./server/server.go &&
+    go build -o ./tmp/auth ./service/auth/serviceAuth.go &&
+    go build -o ./tmp/equipment ./service/equipment/serviceEquipment.go &&
+    go build -o ./tmp/kafka ./service/kafka/serviceKafka.go &&
+    echo '#!/bin/bash
+    echo "Starting Auth Service..."
+    ./tmp/auth &
+    sleep 2
+    
+    echo "Starting Equipment Service..."
+    ./tmp/equipment &
+    sleep 2
+    
+    echo "Starting Kafka Service..."
+    ./tmp/kafka &
+    sleep 2
+    
+    echo "Starting Main Server..."
+    ./tmp/server
+    wait' > ./tmp/run_all.sh &&
+    chmod +x ./tmp/run_all.sh
+  """
+  
+  # Watch các thư mục chứa code
+  include_ext = ["go", "yml", "proto"]
+  exclude_dir = ["tmp", "MQTT", "mosquitto", "docker", "zoo.cfg"]
+  watch_dir = [
+    "server",
+    "service/auth",
+    "service/equipment", 
+    "service/kafka",
+    "proto"
+  ]
+  clean_on_exit = true
 
 [log]
-  level = "debug"  # Debug để dễ theo dõi lỗi
+  level = "debug"

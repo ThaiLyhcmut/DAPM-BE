@@ -7,3 +7,5 @@
 
 MQTT/myenv/
 mosquitto/
+kafka_server_jaas.conf
+zoo.conf

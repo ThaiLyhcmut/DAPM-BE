@@ -209,3 +209,24 @@ func (C *Controller) ControllerDeleteEquipment(id int32) (*protoEquipment.Succes
 		Msg:  "success",
 	}, nil
 }
+
+func (C *Controller) ControllerChangeTurnOn(id int32, turnOn bool) (*protoEquipment.SuccessRP, error) {
+	err := C.d.ChangeTurnOn(id, turnOn)
+	if err != nil {
+		return nil, err
+	}
+	return &protoEquipment.SuccessRP{
+		Code: "success",
+		Msg:  "Change TurnOn Success",
+	}, nil
+}
+
+func (C *Controller) ControllerChangeTime(id int32, timeStart string, timeEnd string) (*protoEquipment.SuccessRP, error) {
+	if err := C.d.ChangeTime(id, timeStart, timeEnd); err != nil {
+		return nil, err
+	}
+	return &protoEquipment.SuccessRP{
+		Code: "success",
+		Msg:  "Change Time Success",
+	}, nil
+}

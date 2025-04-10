@@ -103,3 +103,18 @@ func (c *GRPCEquipmentClient) DeleteEquipment(id int32) (*protoEquipment.Success
 		Id: id,
 	})
 }
+
+func (c *GRPCEquipmentClient) ChangeTurnOnEquipment(id int32, turnOn bool) (*protoEquipment.SuccessRP, error) {
+	return c.client.ChangeTurnOn(context.Background(), &protoEquipment.ChangeEquipmentRQ{
+		Id:     id,
+		TurnOn: turnOn,
+	})
+}
+
+func (c *GRPCEquipmentClient) ChangeTimeEquipment(id int32, timeStart string, timeEnd string) (*protoEquipment.SuccessRP, error) {
+	return c.client.ChangeTime(context.Background(), &protoEquipment.ChangeEquipmentTime{
+		Id:        id,
+		TimeStart: timeStart,
+		TimeEnd:   timeEnd,
+	})
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -60,7 +61,7 @@ func (S *service) Infor(ctx context.Context, in *protoAuth.IdA) (*protoAuth.Acco
 }
 
 func main() {
-	godotenv.Load()
+	godotenv.Load(".service.auth.env")
 	db := database.InitDB()
 	// Ensure proper cleanup
 	ctrl := controller.NewController(db)
@@ -69,6 +70,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
 	}
+	fmt.Println("service run on ", os.Getenv("NET_WORK"), os.Getenv("ADDRESS"))
 
 	s := grpc.NewServer() // tao server
 

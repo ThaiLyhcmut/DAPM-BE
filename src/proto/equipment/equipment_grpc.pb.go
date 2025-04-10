@@ -34,6 +34,8 @@ const (
 	EquipmentService_DeleteEquipment_FullMethodName = "/equipment.EquipmentService/DeleteEquipment"
 	EquipmentService_EditEquipment_FullMethodName   = "/equipment.EquipmentService/EditEquipment"
 	EquipmentService_CheckEquipment_FullMethodName  = "/equipment.EquipmentService/CheckEquipment"
+	EquipmentService_ChangeTurnOn_FullMethodName    = "/equipment.EquipmentService/ChangeTurnOn"
+	EquipmentService_ChangeTime_FullMethodName      = "/equipment.EquipmentService/ChangeTime"
 )
 
 // EquipmentServiceClient is the client API for EquipmentService service.
@@ -60,6 +62,8 @@ type EquipmentServiceClient interface {
 	DeleteEquipment(ctx context.Context, in *DeleteEquipmentRQ, opts ...grpc.CallOption) (*SuccessRP, error)
 	EditEquipment(ctx context.Context, in *EditEquipmentRQ, opts ...grpc.CallOption) (*EquipmentRP, error)
 	CheckEquipment(ctx context.Context, in *CheckEquipmentRQ, opts ...grpc.CallOption) (*EquipmentRP, error)
+	ChangeTurnOn(ctx context.Context, in *ChangeEquipmentRQ, opts ...grpc.CallOption) (*SuccessRP, error)
+	ChangeTime(ctx context.Context, in *ChangeEquipmentTime, opts ...grpc.CallOption) (*SuccessRP, error)
 }
 
 type equipmentServiceClient struct {
@@ -220,6 +224,26 @@ func (c *equipmentServiceClient) CheckEquipment(ctx context.Context, in *CheckEq
 	return out, nil
 }
 
+func (c *equipmentServiceClient) ChangeTurnOn(ctx context.Context, in *ChangeEquipmentRQ, opts ...grpc.CallOption) (*SuccessRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessRP)
+	err := c.cc.Invoke(ctx, EquipmentService_ChangeTurnOn_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *equipmentServiceClient) ChangeTime(ctx context.Context, in *ChangeEquipmentTime, opts ...grpc.CallOption) (*SuccessRP, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SuccessRP)
+	err := c.cc.Invoke(ctx, EquipmentService_ChangeTime_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EquipmentServiceServer is the server API for EquipmentService service.
 // All implementations must embed UnimplementedEquipmentServiceServer
 // for forward compatibility.
@@ -244,6 +268,8 @@ type EquipmentServiceServer interface {
 	DeleteEquipment(context.Context, *DeleteEquipmentRQ) (*SuccessRP, error)
 	EditEquipment(context.Context, *EditEquipmentRQ) (*EquipmentRP, error)
 	CheckEquipment(context.Context, *CheckEquipmentRQ) (*EquipmentRP, error)
+	ChangeTurnOn(context.Context, *ChangeEquipmentRQ) (*SuccessRP, error)
+	ChangeTime(context.Context, *ChangeEquipmentTime) (*SuccessRP, error)
 	mustEmbedUnimplementedEquipmentServiceServer()
 }
 
@@ -298,6 +324,12 @@ func (UnimplementedEquipmentServiceServer) EditEquipment(context.Context, *EditE
 }
 func (UnimplementedEquipmentServiceServer) CheckEquipment(context.Context, *CheckEquipmentRQ) (*EquipmentRP, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckEquipment not implemented")
+}
+func (UnimplementedEquipmentServiceServer) ChangeTurnOn(context.Context, *ChangeEquipmentRQ) (*SuccessRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeTurnOn not implemented")
+}
+func (UnimplementedEquipmentServiceServer) ChangeTime(context.Context, *ChangeEquipmentTime) (*SuccessRP, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeTime not implemented")
 }
 func (UnimplementedEquipmentServiceServer) mustEmbedUnimplementedEquipmentServiceServer() {}
 func (UnimplementedEquipmentServiceServer) testEmbeddedByValue()                          {}
@@ -590,6 +622,42 @@ func _EquipmentService_CheckEquipment_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EquipmentService_ChangeTurnOn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeEquipmentRQ)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).ChangeTurnOn(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_ChangeTurnOn_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).ChangeTurnOn(ctx, req.(*ChangeEquipmentRQ))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EquipmentService_ChangeTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeEquipmentTime)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EquipmentServiceServer).ChangeTime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EquipmentService_ChangeTime_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EquipmentServiceServer).ChangeTime(ctx, req.(*ChangeEquipmentTime))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EquipmentService_ServiceDesc is the grpc.ServiceDesc for EquipmentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -656,6 +724,14 @@ var EquipmentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckEquipment",
 			Handler:    _EquipmentService_CheckEquipment_Handler,
+		},
+		{
+			MethodName: "ChangeTurnOn",
+			Handler:    _EquipmentService_ChangeTurnOn_Handler,
+		},
+		{
+			MethodName: "ChangeTime",
+			Handler:    _EquipmentService_ChangeTime_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

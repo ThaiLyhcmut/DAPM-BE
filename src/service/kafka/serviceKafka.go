@@ -21,6 +21,7 @@ type DeviceService struct {
 }
 
 func (s *DeviceService) ToggleDevice(ctx context.Context, req *protoKafka.DeviceRequest) (*protoKafka.DeviceResponse, error) {
+
 	topic := os.Getenv("DEVICE_TOGGLE_TOPIC")
 	writer := kafka.NewWriter(kafka.WriterConfig{
 		Brokers: []string{os.Getenv("KAFKA_BROKER")},
@@ -28,7 +29,6 @@ func (s *DeviceService) ToggleDevice(ctx context.Context, req *protoKafka.Device
 	})
 	defer writer.Close()
 
-	// Gửi deviceId | turnOn | accountId
 	message := fmt.Sprintf("%d|%t|%d", req.Id, req.TurnOn, req.AccountId)
 	err := writer.WriteMessages(ctx, kafka.Message{
 		Key:   []byte(fmt.Sprintf("%d", req.Id)),
@@ -42,7 +42,7 @@ func (s *DeviceService) ToggleDevice(ctx context.Context, req *protoKafka.Device
 }
 
 func main() {
-	godotenv.Load()
+	godotenv.Load(".service.kafka.env")
 	db := database.InitDB()
 	// Ensure proper cleanup
 	ctrl := controller.NewController(db)
@@ -50,6 +50,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
 	}
+	fmt.Println("service run on ", os.Getenv("NET_WORK"), os.Getenv("ADDRESS"))
 
 	s := grpc.NewServer() // tao server
 

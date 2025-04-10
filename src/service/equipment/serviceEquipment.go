@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -77,6 +78,14 @@ func (S *service) CheckEquipment(ctx context.Context, in *protoEquipment.CheckEq
 	return S.c.ControllerCheckEquipment(in.Id)
 }
 
+func (S *service) ChangeTurnOn(ctx context.Context, in *protoEquipment.ChangeEquipmentRQ) (*protoEquipment.SuccessRP, error) {
+	return S.c.ControllerChangeTurnOn(in.Id, in.TurnOn)
+}
+
+func (S *service) ChangeTime(ctx context.Context, in *protoEquipment.ChangeEquipmentTime) (*protoEquipment.SuccessRP, error) {
+	return S.c.ControllerChangeTime(in.Id, in.TimeStart, in.TimeEnd)
+}
+
 func main() {
 	godotenv.Load(".service.equipment.env")
 	db := database.InitDB()
@@ -87,7 +96,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("err while create listen %v", err)
 	}
-
+	fmt.Println("service run on ", os.Getenv("NET_WORK"), os.Getenv("ADDRESS"))
 	s := grpc.NewServer() // tao server
 
 	protoEquipment.RegisterEquipmentServiceServer(s, &service{c: ctrl}) // dang ky server

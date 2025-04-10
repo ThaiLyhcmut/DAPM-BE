@@ -172,3 +172,20 @@ func (D *Database) CheckEquipment(id int32) (*model.Equipment, error) {
 	}
 	return equipment, nil
 }
+
+func (D *Database) ChangeTurnOn(id int32, turnOn bool) error {
+	D.DB.Model(&model.Equipment{
+		Id: id,
+	}).Update("turnOn", turnOn)
+	return nil
+}
+
+func (D *Database) ChangeTime(id int32, timeStart string, timeEnd string) error {
+	D.DB.Model(&model.Equipment{
+		Id: id,
+	}).Updates(&model.Equipment{
+		TimeStart: timeStart,
+		TimeEnd:   timeEnd,
+	})
+	return nil
+}

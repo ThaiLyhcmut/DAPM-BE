@@ -17,13 +17,29 @@ import (
 
 func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (*string, error) {
 	Claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
-	fmt.Print(Claims.ID, ok)
 	if !ok {
 		return nil, fmt.Errorf("Unauthorzition")
 	}
 	Id, err := helper.ParseASE(Claims.ID)
+
 	if err != nil {
 		return nil, fmt.Errorf("error parse id")
+	}
+
+	equipment, err := C.equipment.CheckEquipment(id)
+
+	if err != nil {
+		return nil, fmt.Errorf("error get Equipment by id")
+	}
+
+	checkEquipmentByAccountId, err := C.equipment.CheckHome(Id, equipment.HomeId)
+
+	if err != nil && checkEquipmentByAccountId == nil {
+		return nil, fmt.Errorf("error equipment id not your home")
+	}
+
+	if _, err = C.equipment.ChangeTurnOnEquipment(id, turnOn); err != nil {
+		return nil, err
 	}
 
 	in := &protoKafka.DeviceRequest{
@@ -74,6 +90,7 @@ func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Dev
 
 		for {
 			msg, err := reader.ReadMessage(ctx)
+
 			if err != nil {
 				log.Println("Kafka read error:", err)
 				return

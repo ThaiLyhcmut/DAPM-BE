@@ -32,7 +32,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 
 	// Tải biến môi trường
-	godotenv.Load()
+	godotenv.Load(".server.env")
 
 	r := gin.Default()
 

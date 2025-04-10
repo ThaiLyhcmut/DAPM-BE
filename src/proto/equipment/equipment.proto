@@ -134,6 +134,18 @@ message checkEquipmentRQ {
   int32 id = 1;
 }
 
+message ChangeEquipmentRQ {
+  int32 id = 1;
+  bool turnOn = 2;
+}
+
+message ChangeEquipmentTime {
+  int32 id = 1;
+  string timeStart = 2;
+  string timeEnd = 3;
+}
+ 
+
 service EquipmentService {
   // start home
   rpc Home(HomeRQ) returns (ListHomeRP) {}
@@ -155,6 +167,11 @@ service EquipmentService {
   rpc DeleteEquipment(DeleteEquipmentRQ) returns (SuccessRP) {}
   rpc EditEquipment(EditEquipmentRQ) returns (EquipmentRP) {}
   rpc CheckEquipment(checkEquipmentRQ) returns (EquipmentRP) {}
+
+  rpc ChangeTurnOn(ChangeEquipmentRQ) returns (SuccessRP) {}
+
+  rpc ChangeTime(ChangeEquipmentTime) returns (SuccessRP) {}
+
   // end equipment
   // rpc Actions(ActionRQ) returns (ActionRP) {}
 }
