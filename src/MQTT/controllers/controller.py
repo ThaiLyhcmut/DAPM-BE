@@ -22,27 +22,29 @@ class MQTTController:
     """Xử lý tin nhắn nhận từ MQTT"""
     print("📩 Received message:", msg.payload.decode())
     print(f"Topic: {msg.topic}, QoS: {msg.qos}, Retain: {msg.retain}")
-    print("Userdata:", userdata)
     print("Client:", client)
     print("Message:", msg)
 
-    if msg.topic == "device/topic":
-      self.device_server(msg)
-    elif msg.topic == "audio/topic":
+    if msg.topic == "audio/topic":
       self.audio_server(msg)
+    else:
+      self.device_server(msg)
 
   def device_server(self, msg):
     """Xử lý tin nhắn liên quan đến thiết bị"""
     device_id, turnOn, message = self.convert_to_json(msg)
     if device_id:
       print(f"✅ Processed Device ID: {device_id} - Message: {message}")
+      print(self.graphql.toggleDevice(device_id, turnOn))
     else:
       print("⚠ Lỗi xử lý MQTT message")
-    print(self.graphql.toggleDevice(device_id, turnOn))
+    # print(self.graphql.toggleDevice(device_id, turnOn))
+  
   def audio_server(self, msg):
     """Xử lý tin nhắn liên quan đến âm thanh"""
     audio_id, message = self.convert_to_json(msg)
     if audio_id:
       print(f"✅ Processed Audio ID: {audio_id} - Message: {message}")
+      self.process_audio(audio_id)
     else:
       print("⚠ Lỗi xử lý MQTT message")

@@ -20,7 +20,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
@@ -38,7 +37,6 @@ services:
 
       # Fix lỗi __consumer_offsets
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
@@ -49,8 +47,6 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
     depends_on:
       - kafka
-
-
   server:
     image: thaily/server
     env_file: 
@@ -71,7 +67,6 @@ services:
       - app-network
     ports:
       - "5000:5000"
-
   service-auth:
     image: thaily/service-auth
     env_file: 
@@ -80,7 +75,6 @@ services:
       - app-network
     ports:
       - "55555:55555"
-
   service-equipment:
     image: thaily/service-equipment
     env_file: 
@@ -89,7 +83,6 @@ services:
       - app-network
     ports:
       - "55556:55556"
-
   service-kafka:
     image: thaily/service-kafka
     env_file: 
