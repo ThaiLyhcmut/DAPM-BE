@@ -25,7 +25,7 @@ class MQTTController:
     print("Client:", client)
     print("Message:", msg)
 
-    if msg.topic == "audio/topic":
+    if msg.topic == "audio":
       self.audio_server(msg)
     else:
       self.device_server(msg)
