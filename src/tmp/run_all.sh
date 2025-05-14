@@ -13,4 +13,5 @@
     
     echo "Starting Main Server..."
     ./tmp/server
+
     wait

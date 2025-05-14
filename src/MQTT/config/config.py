@@ -4,8 +4,8 @@ import paho.mqtt.client as mqtt
 import requests
 import json
 from controllers.controller import MQTTController  # Import class mới
-
 client = mqtt.Client()
+import asyncio
 
 class MQTTConfig:
   def __init__(self):
@@ -18,25 +18,51 @@ class MQTTConfig:
     self.topics = list(set(self.topics))
     self.client = client
     self.aio_url = "https://io.adafruit.com/api/v2"
+    self.controller = MQTTController(self.client)
+    self.client.user_data_set({"status": "divices"})
 
   def connectMQTT(self):
     self.client.client_id = self.client_id
     self.client.username_pw_set(self.username, self.password)
-
+    self.topics = self.controller.get_topic() # get topic on server
     try:
       self.client.connect(self.broker, self.port)
       logging.info("✅ Kết nối MQTT thành công!")
+
     except Exception as e:
       logging.error(f"❌ Lỗi kết nối MQTT: {e}")
       print("connect-error")
       return
     for topic in self.topics:
       self.client.subscribe(topic)
-      self.create_topic(topic)
-    mqtt_controller = MQTTController(self.client)
-    print(self.client, mqtt_controller, self.topics) 
-    self.client.on_message = mqtt_controller.controller 
+      self.create_topic(topic)    
+
+    self.client.on_message = self.controller.controller
     self.client.loop_start()
+
+  
+  async def gql_listener(self):
+    async for data in self.controller.socket_gql():
+        device_id = data["id"]
+        turn_on = data["turnOn"]
+        if device_id is None:
+            continue  # Bỏ qua nếu lỗi parse
+
+        # Tìm name_id từ self.topics
+        name_id = None
+        for topic in self.topics:
+            if topic.split("_")[-1] == str(device_id):
+                name_id = topic
+                break
+
+        if name_id is None:
+            logging.warning("device_id %s không tìm thấy trong self.topics", device_id)
+            continue
+
+        value = "ON" if turn_on else "OFF"
+        self.client.user_data_set({"status": "server"})
+        self.client.publish(name_id, value)
+        logging.info("📡 Đã gửi lệnh tới thiết bị (%s): %s", name_id, value)
 
   def create_adafruit_feed(self, feed_name):
     """Tạo feed mới trên Adafruit IO nếu chưa tồn tại"""

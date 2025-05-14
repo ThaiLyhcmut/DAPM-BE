@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 	"time"
-	"fmt"
 
 	"ThaiLy/graph/controller"
 	"ThaiLy/graph/generated"
@@ -51,7 +50,6 @@ func main() {
 		port = defaultPort
 	}
 	auth, err := client.NewGRPCAuthClient(os.Getenv("SERVICE_AUTH"))
-	fmt.Println(os.Getenv("SERVICE_AUTH"))
 	if err != nil {
 		log.Fatalf("client auth error %v", err)
 	}

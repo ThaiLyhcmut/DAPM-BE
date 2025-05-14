@@ -24,6 +24,7 @@ tmp_dir = "tmp"
     
     echo "Starting Main Server..."
     ./tmp/server
+
     wait' > ./tmp/run_all.sh &&
     chmod +x ./tmp/run_all.sh
   """

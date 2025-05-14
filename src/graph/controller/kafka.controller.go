@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/segmentio/kafka-go"
 )
@@ -117,6 +118,8 @@ func (C *Controller) DeviceService(ctx context.Context, id int32, turnOn bool) (
 var (
 	kafkaReaderOnce sync.Once
 	kafkaReader     *kafka.Reader
+	consumerCtx     context.Context
+	consumerCancel  context.CancelFunc
 )
 
 // getKafkaReader returns a singleton kafka reader
@@ -130,19 +133,54 @@ func getKafkaReader() *kafka.Reader {
 			MinBytes: 10e3, // 10KB
 			MaxBytes: 10e6, // 10MB
 		})
+
+		// Tạo context riêng cho consumer
+		consumerCtx, consumerCancel = context.WithCancel(context.Background())
 	})
 	return kafkaReader
 }
 
+// Graceful shutdown handler
+func (C *Controller) ShutdownKafkaConsumer() {
+	if consumerCancel != nil {
+		consumerCancel()
+	}
+	if kafkaReader != nil {
+		kafkaReader.Close()
+	}
+}
+
 // startKafkaConsumer starts a single Kafka consumer for all connections
-func (C *Controller) startKafkaConsumer(ctx context.Context) {
+func (C *Controller) startKafkaConsumer() {
 	reader := getKafkaReader()
 
 	go func() {
+		defer func() {
+			log.Println("Kafka consumer shutting down")
+			reader.Close()
+		}()
+
 		for {
-			msg, err := reader.ReadMessage(ctx)
+			// Kiểm tra xem consumer context đã bị hủy chưa
+			select {
+			case <-consumerCtx.Done():
+				log.Println("Kafka consumer context canceled, exiting consumer")
+				return
+			default:
+				// Tiếp tục xử lý
+			}
+
+			msg, err := reader.ReadMessage(consumerCtx)
 			if err != nil {
+				// Xử lý lỗi context đã bị hủy
+				if consumerCtx.Err() != nil {
+					log.Println("Kafka consumer context canceled, exiting consumer loop")
+					return
+				}
+
 				log.Println("Kafka read error:", err)
+				// Thêm backoff logic để tránh CPU sử dụng 100% khi lỗi liên tục
+				time.Sleep(1 * time.Second)
 				continue
 			}
 
@@ -178,9 +216,9 @@ func (C *Controller) startKafkaConsumer(ctx context.Context) {
 var initConsumerOnce sync.Once
 
 func (C *Controller) DeviceStatusUpdated(ctx context.Context) (<-chan *model.Device, error) {
-	// Start Kafka consumer if not already started
+	// Start Kafka consumer if not already started - với context riêng
 	initConsumerOnce.Do(func() {
-		C.startKafkaConsumer(ctx)
+		C.startKafkaConsumer()
 	})
 
 	claims, ok := ctx.Value(helper.Auth).(*helper.Claims)
