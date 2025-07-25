@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+
 type DeviceService struct {
 	c *controller.Controller
 	protoKafka.UnimplementedDeviceServiceServer
